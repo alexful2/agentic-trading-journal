@@ -1,0 +1,118 @@
+{#-
+email-default.html.j2
+
+Daily brief email template. Rendered by build_and_send.py.
+
+Context:
+  title           "Daily Alert — April 23, 2026" (unused in render — email
+                  subject/timestamp cover the date)
+  date_long       "April 23, 2026"
+  preheader       inbox-preview snippet, ≤80 chars
+  logo_url        CDN URL for the logo image (publicly reachable — Gmail
+                  won't render images from private repos)
+  footer_model    "Claude Opus 4.7" (or whichever model generated it)
+  weekly_review   {header, bullets_html}  OR  None (only on Friday runs
+                  when a weekly-review file exists)
+  active_pre_earnings list of one-line HTML strings for tickers with a
+                  pre-earnings file whose print date is within ~10 trading
+                  days. Omitted on days with no active windows.
+  price_triggers  list of one-line HTML strings for fired broader triggers
+                  (omitted on days with no fires)
+  items           list of items. Each has:
+                    severity     3 | 4
+                    title_html   e.g. "<strong>NVDA — Chairman sold 33k shares</strong>"
+                    sub_html     pre-rendered list of <li> lines (source,
+                                 why, action) wrapped in <ul>
+  macro           list of HTML-rendered bullet strings (no <li> wrapper;
+                  template adds it)
+  housekeeping    list of HTML-rendered bullet strings (same shape as macro)
+                  OR empty list — template omits section if empty.
+
+All fields named `*_html` are expected to be pre-escaped HTML and will be
+emitted verbatim via `| safe`.
+
+To swap styling: copy this file to e.g. `email-minimal.html.j2`, edit
+inline styles, and pass `--email-template templates/email-minimal.html.j2`
+to build_and_send.py. The context contract above is stable.
+-#}
+<!DOCTYPE html><html><body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.5; color: #222;">
+
+<!-- Inbox preview text — invisible, lifted into snippet by mail clients. -->
+<div style="display: none; max-height: 0px; overflow: hidden;">
+  {{ preheader }}
+</div>
+<div style="display: none; max-height: 0px; overflow: hidden;">
+  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+</div>
+
+<!-- Logo header -->
+<div style="margin: 8px 0 22px 0; width: 220px; height: 38px; background-image: url('{{ logo_url }}'); background-size: contain; background-repeat: no-repeat; background-position: left center;" role="img" aria-label="Trading Journal">&nbsp;</div>
+
+{%- if weekly_review %}
+<p><strong>Weekly Review — {{ weekly_review.header }}</strong></p>
+<ul>
+  {%- for b in weekly_review.bullets_html %}
+  <li>{{ b | safe }}</li>
+  {%- endfor %}
+</ul>
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+{%- endif %}
+
+{%- if active_pre_earnings %}
+<p><strong>Active Pre-Earnings Windows</strong></p>
+<ul>
+  {%- for t in active_pre_earnings %}
+  <li>{{ t | safe }}</li>
+  {%- endfor %}
+</ul>
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+{%- endif %}
+
+{%- if price_triggers %}
+<p><strong>Broader Price Triggers</strong></p>
+<ul>
+  {%- for t in price_triggers %}
+  <li>{{ t | safe }}</li>
+  {%- endfor %}
+</ul>
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+{%- endif %}
+
+{%- for item in items %}
+{%- if item.severity >= 4 %}
+<div style="border-left: 3px solid #c53030; padding-left: 14px;">
+  <p>{{ item.title_html | safe }}</p>
+  {{ item.sub_html | safe }}
+</div>
+{%- else %}
+<p>{{ item.title_html | safe }}</p>
+{{ item.sub_html | safe }}
+{%- endif %}
+{%- endfor %}
+
+{%- if items %}
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+{%- endif %}
+
+<p><strong>Macro awareness</strong></p>
+<ul>
+  {%- for b in macro %}
+  <li>{{ b | safe }}</li>
+  {%- endfor %}
+</ul>
+
+{%- if housekeeping %}
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+<p><strong>Price Trigger Housekeeping</strong></p>
+<ul>
+  {%- for b in housekeeping %}
+  <li>{{ b | safe }}</li>
+  {%- endfor %}
+</ul>
+{%- endif %}
+
+<hr style="border: none; border-top: 1px solid #ccc; margin: 24px 0;">
+
+<p style="color: #666; font-style: italic; font-size: 13px;">Not investment advice. Generated by {{ footer_model }}.</p>
+
+</body></html>

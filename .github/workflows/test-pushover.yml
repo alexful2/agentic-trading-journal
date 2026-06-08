@@ -1,0 +1,50 @@
+name: Test Pushover
+
+# Manual-only utility workflow — sends a single sample sev-4 push so the
+# user can preview what an intraday-news critical alert looks like on their
+# phone. Reuses send_pushover() from check_intraday_news.py to guarantee
+# format parity with the real worker.
+#
+# Trigger manually: gh workflow run "Test Pushover"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Send sample sev-4 push
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, ".claude/scripts")
+          from check_intraday_news import send_pushover
+
+          # Representative sev-4 alert. Same format the live worker uses
+          # for a single-item critical fire.
+          send_pushover(
+              title="[VRT] guidance change",
+              message=(
+                  "2026-05-03 18:30 UTC  [TEST]\n"
+                  "\n"
+                  "[VRT] guidance change\n"
+                  "  Vertiv withdraws FY2026 revenue guidance citing slower "
+                  "data-center orders and supply-chain headwinds\n"
+                  "  via Reuters\n"
+                  "\n"
+                  "[Test push from intraday-news worker. v1.2, Alpaca + EDGAR sources.]"
+              ),
+              priority=1,
+          )
+          print("sample sev-4 push sent.")
+          PY

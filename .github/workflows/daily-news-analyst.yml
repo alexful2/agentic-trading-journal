@@ -1,0 +1,140 @@
+name: Daily News Analyst
+
+# Migrated from Claude Routines (claude.ai/code/scheduled). Runs the
+# news-analyst skill via headless Claude Code CLI, commits the daily
+# report markdown back to main, and ships the email brief via the
+# news-visual pipeline.
+#
+# Why GH Actions instead of Routines:
+# - Logs persist (Routines deletes failed runs from the cloud UI).
+# - One-click manual re-run via workflow_dispatch.
+# - Same secret/cron model as the intraday-price-triggers worker.
+#
+# Cron is in UTC. 15:13 UTC = 8:13 AM PDT (summer) / 7:13 AM PST (winter).
+# Why 15:13 specifically:
+# - After 9:30 AM ET market open year-round (13:30 UTC summer, 14:30 UTC winter)
+#   so the alert can reflect how today is actually trading.
+# - After Friday weekly-review (14:27) and vault-curator (14:57) so the
+#   Friday email's Weekly Review prepend is populated when the daily fires.
+# - `:13` minute (odd, off-the-half-hour) dodges cron contention on GH
+#   Actions. Round-number AND `:30` slots both routinely queue 60–90 min
+#   behind — observed 1h24m delay at `:30` on 2026-04-30. Odd-minute
+#   intraday cron jobs in this repo fire on-time. See memory
+#   `gh_actions_cron_contention.md`.
+#
+# Auth: CLAUDE_CODE_OAUTH_TOKEN authenticates Claude Code against the
+# user's Claude.ai Pro/Max subscription rather than API token billing.
+# Usage counts against the existing subscription quota — no extra cost.
+# Generate locally one-time with `claude setup-token` (interactive OAuth,
+# outputs a 1-year token). Do NOT also set ANTHROPIC_API_KEY: that secret
+# takes precedence and reverts to API billing.
+#
+# First-run checklist (one-time setup):
+# - Run `claude setup-token` locally → copy the token.
+# - Add repo secrets:
+#     CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token` above)
+#     RESEND_API_KEY          (already a secret)
+#     FMP_API_KEY             (copy from .claude/settings.local.json)
+# - Trigger via "Run workflow" (Actions tab → Daily News Analyst → Run workflow)
+#   to verify before relying on the schedule.
+# - Pause the existing Claude Routine for daily news at claude.ai/code/scheduled
+#   once the GH Actions run is verified, to avoid double-runs.
+
+on:
+  # Schedule disabled 2026-05-05 — migrated to systemd timer on Linux VPS
+  # (/opt/trading-journal/scripts/daily-news.sh, daily-news.timer). GH Actions
+  # cron was unreliable: documented "may be delayed during high load" + actual
+  # runner-allocation failures observed (2026-05-05 15:13 UTC silently dropped).
+  # Re-enable by uncommenting + disabling the VPS timer:
+  #   sudo systemctl disable --now daily-news.timer
+  # schedule:
+  #   - cron: "13 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-news-analyst
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-claude-code
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Keep the daily hot path lean while PDF rendering and auto
+          # deep-dives are disabled. Re-add yfinance/playwright/Chromium
+          # only if those features move back into this workflow.
+          pip install jinja2
+
+      - name: Run news-analyst
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          claude -p --dangerously-skip-permissions \
+            "Run the daily news analysis for today."
+
+      - name: Commit and push report
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Stage the files we explicitly want to commit BEFORE pulling.
+          # The skill writes vault/reports/daily/YYYY-MM-DD.md and may also
+          # touch watchlist.md (auto-deep-dive chain → apply_watchlist_updates.py).
+          # Whitelisting keeps scratch files (positions.json, trigger_results_*.json,
+          # etc. — covered by .gitignore but defensive) out of the commit.
+          git add vault/reports/daily/ \
+                  vault/watchlist.md \
+                  vault/price-triggers.md \
+                  vault/companies/ \
+                  vault/deep-dives/ \
+                  vault/ipo-calendar.md \
+                  2>/dev/null || true
+          # Commit BEFORE pulling. `git pull --rebase --autostash` runs
+          # `git stash push -u` (no `--keep-index`), which stashes both
+          # staged + unstaged changes and pops them back as UNSTAGED —
+          # silently destroying the staging we just did. Committing first
+          # turns the daily report into a real local commit that survives
+          # the rebase regardless of working-tree dirt (skill scratch
+          # files, intraday alerts, Obsidian Git backups landing during
+          # the run). Symptom of the bug: "no vault changes to commit"
+          # even when the file was clearly written (observed 2026-04-30).
+          if git diff --cached --quiet; then
+            echo "no vault changes to commit"
+          else
+            git commit -m "daily report: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin main
+            git push origin main
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+        run: |
+          # Surface workflow failures to phone — without this, a failed run
+          # is only visible as a red badge in the Actions tab. `|| true` so
+          # a Pushover hiccup doesn't mask the underlying failure already
+          # captured by the red badge.
+          curl -s --max-time 10 \
+            --form-string "token=${PUSHOVER_TOKEN}" \
+            --form-string "user=${PUSHOVER_USER}" \
+            --form-string "title=trading-journal: ${{ github.workflow }} failed" \
+            --form-string "message=Run #${{ github.run_number }} failed on ${{ github.ref_name }}. Tap to view logs." \
+            --form-string "url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --form-string "url_title=View run logs" \
+            --form-string "priority=0" \
+            https://api.pushover.net/1/messages.json || true

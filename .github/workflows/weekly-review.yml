@@ -1,0 +1,108 @@
+name: Weekly Macro Review
+
+# Migrated from Claude Routines (claude.ai/code/scheduled). Runs the
+# weekly-review skill via headless Claude Code CLI on Fridays. Output
+# (vault/reports/weekly/YYYY-WW.md) is consumed by the Friday daily-news
+# email brief (Weekly Review prepend) and by the vault-curator run that
+# fires shortly after.
+#
+# Why GH Actions instead of Routines:
+# - Logs persist (Routines deletes failed runs from the cloud UI).
+# - One-click manual re-run via workflow_dispatch.
+# - Same secret/cron model as the other GH Actions workers.
+#
+# Cron is in UTC. 14:27 UTC = 7:27 AM PDT (summer) / 6:27 AM PST (winter),
+# Fridays only. Why this slot:
+# - Must finish before the daily news-analyst run at 15:13 UTC so the
+#   Friday email brief can prepend the Weekly Review section. A 7:27 AM
+#   start gives 46 min before daily fires (and 30 min before curator
+#   fires at 14:57 UTC).
+# - Must finish before the vault-curator run at 14:57 UTC so curator
+#   reads the freshly-written weekly file as macro context. 30 min
+#   buffer is the working assumption based on daily run timing (~13 min
+#   compute on 2026-04-29).
+# - `:27` minute (off-the-hour) dodges round-number cron contention on
+#   GH Actions — top-of-hour slots routinely queue 30–90 min behind.
+#
+# Auth: CLAUDE_CODE_OAUTH_TOKEN authenticates Claude Code against the
+# user's Claude.ai Pro/Max subscription rather than API token billing.
+# Same setup as daily-news-analyst.yml — generate locally one-time with
+# `claude setup-token`. Do NOT also set ANTHROPIC_API_KEY.
+
+on:
+  # Schedule disabled 2026-05-05 — migrated to systemd timer on Linux VPS
+  # (/opt/trading-journal/scripts/weekly-review.sh, weekly-review.timer).
+  # See daily-news-analyst.yml for migration rationale.
+  # schedule:
+  #   - cron: "27 14 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-review
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-claude-code
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install yfinance requests
+
+      - name: Run weekly-review
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          claude -p --dangerously-skip-permissions \
+            "Run the weekly review for this week."
+
+      - name: Commit and push report
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Stage the files we explicitly want to commit BEFORE pulling.
+          # weekly-review writes vault/reports/weekly/YYYY-WW.md and may
+          # touch watchlist.md / price-triggers.md (housekeeping pruning
+          # of expired tranches and stale rows per CLAUDE.md).
+          git add vault/reports/weekly/ \
+                  vault/watchlist.md \
+                  vault/price-triggers.md \
+                  2>/dev/null || true
+          # Commit BEFORE pulling. `--autostash` strips staged state when
+          # popping the stash, silently dropping the report. See the same
+          # comment block in daily-news-analyst.yml for full detail.
+          if git diff --cached --quiet; then
+            echo "no vault changes to commit"
+          else
+            git commit -m "weekly review: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin main
+            git push origin main
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+        run: |
+          curl -s --max-time 10 \
+            --form-string "token=${PUSHOVER_TOKEN}" \
+            --form-string "user=${PUSHOVER_USER}" \
+            --form-string "title=trading-journal: ${{ github.workflow }} failed" \
+            --form-string "message=Run #${{ github.run_number }} failed on ${{ github.ref_name }}. Tap to view logs." \
+            --form-string "url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --form-string "url_title=View run logs" \
+            --form-string "priority=0" \
+            https://api.pushover.net/1/messages.json || true

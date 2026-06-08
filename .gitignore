@@ -1,0 +1,50 @@
+# Obsidian workspace settings (local to each machine)
+.obsidian/
+vault/.obsidian/
+
+# Per-machine Claude Code settings — holds env (API keys) and permission allowlist.
+# Must NOT be tracked: secrets live here for local runs. Cloud routines have
+# their own env config at claude.ai/code/scheduled.
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.env
+
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp / logs
+*.log
+*.tmp
+trigger_results.json
+trigger_results_*.json
+positions.json
+upcoming_earnings.json
+verdict_drift.json
+patterns_temp.json
+
+# Intraday worker state (persisted across GH Actions runs via actions/cache,
+# never committed). Contains today's already-alerted fire ids so the worker
+# doesn't re-email the same trigger every 15 min.
+.intraday-state/
+
+# Multi-agent review scratchpad. Local handoff artifact between Claude and
+# Codex for in-session dialectic. Persists across sessions on this machine
+# (so a follow-up ping can see prior rounds) but never committed — agent
+# chatter doesn't belong in git history. Promote real decisions to vault/
+# manually if worth keeping.
+.scratchpad/
+
+# Generated daily-brief scratch (regenerated each run — archived copy lives
+# in vault/reports/daily/pdf/YYYY-MM-DD.pdf)
+news-visual/briefing.pdf
+news-visual/briefing-data.js
+news-visual/brief.html
+news-visual/brief.txt
+news-visual/files.zip

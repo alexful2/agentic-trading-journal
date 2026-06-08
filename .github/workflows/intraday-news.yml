@@ -1,0 +1,76 @@
+name: Intraday News
+
+# Polls Google News RSS + SEC EDGAR atom for Tier 1/2 watchlist tickers
+# every 20 min during US extended hours (M–F). Pushes Pushover alerts on
+# sev-4 events (8-K, halt, guidance change, M&A, FDA decision, executive
+# departure, etc.). Sev-3 items log to vault but do NOT push.
+#
+# Cron in UTC. 10:00–23:59 UTC covers premarket (~3 AM PT / 6 AM ET) through
+# near-after-hours close (~4:40 PM PT / 7:40 PM ET) under both DST and EST.
+# Skips overnight + weekends to keep tick count manageable; widen later if
+# off-hours catalysts justify the noise.
+#
+# State persists across runs via actions/cache. Dedup is per-day in
+# .intraday-state/news-YYYY-MM-DD.json (separate prefix from the price
+# worker's state file in the same directory).
+#
+# Dependencies: stdlib only.
+
+on:
+  # Schedule disabled 2026-05-05 — migrated to systemd timer on Linux VPS
+  # (/opt/trading-journal/scripts/intraday-news.sh, intraday-news.timer).
+  # See daily-news-analyst.yml for migration rationale.
+  # schedule:
+  #   - cron: "*/20 10-23 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: intraday-news
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Restore intraday news state cache
+        uses: actions/cache@v4
+        with:
+          path: .intraday-state
+          key: intraday-news-state-v1-${{ github.run_id }}
+          restore-keys: |
+            intraday-news-state-v1-
+
+      - name: Run intraday news worker
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_API_SECRET: ${{ secrets.ALPACA_API_SECRET }}
+        run: python .claude/scripts/check_intraday_news.py
+
+      - name: Commit vault log if any new alerts
+        # Order matters: add → commit → pull → push. Avoids the
+        # `git pull --rebase --autostash` trap that bit the LLM workflows
+        # on 2026-04-30 (autostash unstages on pop).
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vault/reports/intraday-alerts/ || true
+          if git diff --cached --quiet; then
+            echo "no vault changes to commit"
+            exit 0
+          fi
+          git commit -m "intraday news: $(date -u +%Y-%m-%d\ %H:%M)Z"
+          git pull --rebase origin main
+          git push origin main

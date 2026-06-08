@@ -1,0 +1,16 @@
+[Unit]
+Description=intraday news-read for %i
+After=network-online.target
+# Same failure-push channel as the other VPS jobs.
+OnFailure=trading-journal-failure@%n.service
+
+[Service]
+Type=oneshot
+User=youruser
+WorkingDirectory=/opt/trading-journal/trading-journal
+ExecStart=/opt/trading-journal/scripts/news-read.sh %i
+# Always clean up the env file when the unit exits, regardless of success.
+# If the unit never starts (e.g., bad EnvironmentFile), the caller is
+# responsible for cleanup; see trigger_news_read() in check_intraday_news.py.
+ExecStopPost=/bin/rm -f /tmp/news-read/%i.env
+TimeoutSec=5min

@@ -1,0 +1,42 @@
+name: Publish Dashboard Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-dashboard-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate dashboard
+        run: python dashboard/generate_dashboard.py
+
+      - name: Sensitive output guard
+        run: python dashboard/deploy_pages.py --dry-run --skip-generate
+
+      - name: Clone public Pages repo
+        env:
+          DASHBOARD_PAGES_TOKEN: ${{ secrets.DASHBOARD_PAGES_TOKEN }}
+        run: |
+          test -n "$DASHBOARD_PAGES_TOKEN"
+          git clone "https://x-access-token:${DASHBOARD_PAGES_TOKEN}@github.com/your-username/trading-dashboard.git" ../trading-dashboard
+          git -C ../trading-dashboard config user.name "github-actions[bot]"
+          git -C ../trading-dashboard config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Publish dashboard
+        run: python dashboard/deploy_pages.py --skip-generate --pages-repo ../trading-dashboard

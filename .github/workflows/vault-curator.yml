@@ -1,0 +1,102 @@
+name: Weekly Vault Curator
+
+# Migrated from Claude Routines (claude.ai/code/scheduled). Runs the
+# vault-curator skill via headless Claude Code CLI on Fridays, after
+# weekly-review has finished. Output is a human-review suggestions file
+# in vault/vault-suggestions/ — does NOT send email.
+#
+# Why GH Actions instead of Routines:
+# - Logs persist (Routines deletes failed runs from the cloud UI).
+# - One-click manual re-run via workflow_dispatch.
+# - Same secret/cron model as the other GH Actions workers.
+#
+# Cron is in UTC. 14:57 UTC = 7:57 AM PDT (summer) / 6:57 AM PST (winter),
+# Fridays only. Why this slot:
+# - Fires 30 min after weekly-review (14:27 UTC) so the freshly-written
+#   weekly file is on disk when curator reads it for macro context.
+# - Fires 16 min before the daily news-analyst run at 15:13 UTC. The
+#   gap is tight — if curator runs >16 min, the daily's checkout misses
+#   curator's commit (low-impact: curator output isn't read by daily,
+#   only the weekly-review file is, and that's already on disk by then).
+# - `:57` minute (off-the-hour) dodges round-number cron contention.
+#
+# Auth: CLAUDE_CODE_OAUTH_TOKEN — same subscription-billed setup as the
+# other LLM-driven workflows.
+
+on:
+  # Schedule disabled 2026-05-05 — migrated to systemd timer on Linux VPS
+  # (/opt/trading-journal/scripts/vault-curator.sh, vault-curator.timer).
+  # See daily-news-analyst.yml for migration rationale.
+  # schedule:
+  #   - cron: "57 14 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vault-curator
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-claude-code
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install yfinance requests
+
+      - name: Run vault-curator
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: |
+          claude -p --dangerously-skip-permissions \
+            "Run the vault curator for this week."
+
+      - name: Commit and push suggestions
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # vault-curator writes vault/vault-suggestions/{filename}.md
+          # and may update vault/ipo-calendar.md (Friday IPO Radar adds
+          # candidates / updates statuses / removes passed rows).
+          # Curator does NOT write to library/ or notes/ — those need
+          # human-review promotion.
+          git add vault/vault-suggestions/ \
+                  vault/ipo-calendar.md \
+                  2>/dev/null || true
+          # Commit BEFORE pulling. `--autostash` strips staged state when
+          # popping the stash, silently dropping the suggestions. See the
+          # same comment block in daily-news-analyst.yml for full detail.
+          if git diff --cached --quiet; then
+            echo "no vault changes to commit"
+          else
+            git commit -m "vault curator: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin main
+            git push origin main
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+        run: |
+          curl -s --max-time 10 \
+            --form-string "token=${PUSHOVER_TOKEN}" \
+            --form-string "user=${PUSHOVER_USER}" \
+            --form-string "title=trading-journal: ${{ github.workflow }} failed" \
+            --form-string "message=Run #${{ github.run_number }} failed on ${{ github.ref_name }}. Tap to view logs." \
+            --form-string "url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --form-string "url_title=View run logs" \
+            --form-string "priority=0" \
+            https://api.pushover.net/1/messages.json || true

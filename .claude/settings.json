@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Exa__web_search_exa",
+      "Bash(python .claude/skills/stock-deep-dive/scripts/get_historical_patterns.py *)",
+      "Bash(python .claude/skills/stock-deep-dive/scripts/get_stock_fundamentals.py *)",
+      "Bash(python .claude/skills/news-analyst/scripts/check_price_triggers.py *)",
+      "Bash(python .claude/skills/stock-deep-dive/scripts/get_options_analysis.py *)"
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+name: Intraday Price Triggers
+
+# Runs every 15 min during US market hours (weekdays) and alerts on newly
+# fired price triggers / planned tranches.
+#
+# Cron is in UTC. 13:00–21:00 UTC covers regular session under both DST
+# (9:00–17:00 ET) and EST (8:00–16:00 ET). Pre-market noise is harmless —
+# nothing fires before market open. Friday afternoon EST runs into 21:00
+# UTC; that's why the upper bound is 21 not 20.
+#
+# State persists across runs via actions/cache. Cache key uses run_id so
+# every run saves a new entry; restore-keys falls back to the most recent
+# prior cache. The script itself uses today's date inside the cache dir,
+# so the date boundary resets the alerted-list naturally.
+#
+# Dependencies: stdlib only — no pip install needed.
+
+on:
+  # Schedule disabled 2026-05-05 — migrated to systemd timer on Linux VPS
+  # (/opt/trading-journal/scripts/intraday-price.sh, intraday-price.timer).
+  # See daily-news-analyst.yml for migration rationale.
+  # schedule:
+  #   - cron: "*/15 13-21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: intraday-price-triggers
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Restore intraday state cache
+        uses: actions/cache@v4
+        with:
+          path: .intraday-state
+          key: intraday-state-v1-${{ github.run_id }}
+          restore-keys: |
+            intraday-state-v1-
+
+      - name: Run intraday worker
+        env:
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+        run: python .claude/scripts/check_intraday_price_triggers.py
+
+      - name: Commit vault log if any new alerts
+        # Order matters: add -> commit -> pull -> push. Pulling first can
+        # abort after the worker appends to an already-tracked daily log if
+        # origin/main advanced during the run.
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vault/reports/intraday-alerts/ || true
+          if git diff --cached --quiet; then
+            echo "no vault changes to commit"
+            exit 0
+          fi
+          git commit -m "intraday alerts: $(date -u +%Y-%m-%d\ %H:%M)Z"
+          git pull --rebase origin main
+          git push origin main
