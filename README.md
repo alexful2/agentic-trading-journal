@@ -120,7 +120,7 @@ layout, conventions, the rules every skill obeys).
 You need [Claude Code](https://claude.com/claude-code) and Python 3.11+.
 
 ```bash
-git clone https://github.com/your-username/agentic-trading-journal
+git clone https://github.com/alexful2/agentic-trading-journal
 cd agentic-trading-journal
 pip install -r news-visual/requirements.txt   # yfinance, requests, jinja2, ...
 
