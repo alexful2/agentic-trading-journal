@@ -49,4 +49,4 @@ from the new thesis. If no such fact exists, the FOMO frame is right.
 ---
 # References
 - [[catalyst-payoff-shape-sizing]]
-- [[Wait-for-deal thesis]]
+- [[wait-for-deal-thesis]]

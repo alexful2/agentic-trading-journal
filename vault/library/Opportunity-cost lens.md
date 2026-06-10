@@ -38,6 +38,6 @@ Key refinements:
   actually the best buy at current prices. Otherwise it's loss aversion dressed
   up as patience.
 
-Connects to the [[Wait-for-deal thesis]]: deal-driven names often become *less*
+Connects to the [[wait-for-deal-thesis]]: deal-driven names often become *less*
 attractive after the deal is announced and the stock runs — the opportunity-cost
 lens catches that transition earlier than "let winners run" thinking does.

@@ -8,7 +8,7 @@ First dedicated IREN thesis note. Bought ~$10,000 on April 16 from the deep-dive
 
 **Why I own it:**
 
-- Mining-to-AI conversion is the cleanest expression of the [[Wait-for-deal thesis]] I've found. IREN owns 4.5 GW of secured grid power, which takes 5–7 years to replicate. That's a structurally scarce asset in an AI buildout where power is the binding constraint.
+- Mining-to-AI conversion is the cleanest expression of the [[wait-for-deal-thesis]] I've found. IREN owns 4.5 GW of secured grid power, which takes 5–7 years to replicate. That's a structurally scarce asset in an AI buildout where power is the binding constraint.
 - Microsoft deal is the thesis executing in real time — $9.7B contract, $1.9B prepaid, 140K GPUs, path to $3.4B ARR by end-2026. Not a hope-bet; the revenue is contracted.
 - Fits the long-term AI-capex thesis — picks-and-shovels layer, directly monetizing the compute scale-up.
 
@@ -82,5 +82,5 @@ If #1 passes and #2/#3 are clean, pull the trigger on the tranche. If not, it's 
 
 - [[IREN-2026-04-18]] — most recent deep dive, WATCH verdict
 - [[IREN-vs-CORZ-2026-04-16]] — original comparison deep dive that produced the ADD verdict for the initial position
-- [[Wait-for-deal thesis]]
+- [[wait-for-deal-thesis]]
 - [[2026-04-16 HNGE thoughts update]] — original rationale for pivoting the free cash into IREN

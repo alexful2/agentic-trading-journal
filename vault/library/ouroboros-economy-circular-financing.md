@@ -22,10 +22,10 @@ NVDA sells GPUs to a neocloud. The neocloud sells compute to a frontier lab. The
 **Distinction from existing frames:**
 - [[ai-infra-thesis-kill-switches]] names the *macro* break-points (capex collapse, GPU pricing, credit). The Ouroboros lens names *intra-cohort* fragility ranking under those break-points.
 - [[orchestration-vs-substrate]] frames where the *margin* lives. The Ouroboros frame describes where the *funding* travels.
-- [[Wait-for-deal thesis]] is about *getting in* before the partnership lands. Ouroboros is about *understanding what the partnership economically is* — the deal moves a name from "no loop exposure yet" to "one-step or multi-step loop exposure," and that's part of the post-deal repricing.
+- [[wait-for-deal-thesis]] is about *getting in* before the partnership lands. Ouroboros is about *understanding what the partnership economically is* — the deal moves a name from "no loop exposure yet" to "one-step or multi-step loop exposure," and that's part of the post-deal repricing.
 
 ---
 # References
 - [[ai-infra-thesis-kill-switches]]
 - [[orchestration-vs-substrate]]
-- [[Wait-for-deal thesis]]
+- [[wait-for-deal-thesis]]

@@ -22,6 +22,6 @@
 
 **Tension / failure mode.** Decay ≠ disappearance — McLean-Pontiff explicitly reject *full* disappearance, and structural limits to arbitrage ([[C10 - Limits to Arbitrage]]) let edges like momentum and value persist for decades. Don't use "it's published, so it's dead" to dismiss a still-working prior. This is the opposite error from C2's nihilism.
 
-**Links.** [[C2 - Replication Crisis in Factor Anomalies]] · [[C10 - Limits to Arbitrage]] · `execution-thesis` · `company-projects` · [[Wait-for-deal thesis]]
+**Links.** [[C2 - Replication Crisis in Factor Anomalies]] · [[C10 - Limits to Arbitrage]] · `execution-thesis` · `company-projects` · [[wait-for-deal-thesis]]
 
 **Verification.** CONFIRMED 2026-06-06 against primary source (JF abstract via Wiley/JSTOR + full body via SSRN 2156623 and author PDFs). All figures — 97 predictors / 80 studies, 0.582 / 0.402 / 0.264 %/mo, −26% / −58% / 32% — match exactly.

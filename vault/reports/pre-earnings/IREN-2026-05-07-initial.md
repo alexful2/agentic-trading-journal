@@ -212,7 +212,7 @@ No Form 144s filed since Sept 11, 2025 — i.e., no announced intent to sell as 
 ## Appendix: What Not To Use This For
 
 - **Thesis reset.** The [[IREN-2026-04-18]] WATCH verdict is 7 days old — fresh. If the May 7 print materially changes the JPMorgan dilution-vs-execution argument, that's a fresh deep-dive job, not a pre-earnings retrofit.
-- **Longer-horizon allocation.** Scenario ladder is a 1-week horizon. The thesis note's 22% portfolio cap and the [[Wait-for-deal thesis]] sizing logic stay anchored in their own files.
+- **Longer-horizon allocation.** Scenario ladder is a 1-week horizon. The thesis note's 22% portfolio cap and the [[wait-for-deal-thesis]] sizing logic stay anchored in their own files.
 - **Fresh blank-slate sizing.** The deep-dive's blank-slate (8–10% / slightly-overweight) is the rotation anchor. This skill does not re-run blank-slate analysis.
 
 ---

@@ -18,5 +18,5 @@ The AI stack splits into two margin pools:
 
 ---
 # References
-- [[AI Energy Thesis]]
+- [[ai-energy-thesis]]
 - [[ai-infra-thesis-kill-switches]]

@@ -159,12 +159,12 @@ target file's date in the path — match the current calendar row).
   the proposed ticker, or `IPO`. Sort by date desc. Read the most recent
   2–3. Use these to detect any prior thinking the user has written about
   this name (often nothing, since pre-IPO names rarely have notes yet).
-- `vault/library/Wait-for-deal thesis.md` — read in full if the sector is
+- `vault/library/wait-for-deal-thesis.md` — read in full if the sector is
   AI infrastructure (compute, power, DC, networking, cooling). The
   wait-for-deal lens is directly relevant to most pre-IPO candidates the
   curator surfaces.
 - `vault/library/` — list filenames. Read any file whose name suggests a
-  relevant framework (e.g., `Broader AI beliefs.md`, `Opportunity-cost lens.md`).
+  relevant framework (e.g., `ai-energy-thesis.md`, `Opportunity-cost lens.md`).
   Don't preload the whole directory.
 - `vault/watchlist.md` — full file. Use Tier 1 / Tier 2 lists as the
   comparison set when reasoning about portfolio fit.

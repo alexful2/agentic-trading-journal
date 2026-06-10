@@ -13,7 +13,7 @@
 
 **What this is NOT.** NOT a license to hold any losing position. The paper itself is candid that PBA's real-world force is unsettled and that the forced-liquidation result holds specifically at *extreme* / fully-invested corner cases.
 
-**How to apply.** This is the *intellectual justification* for two instincts: the [[Wait-for-deal thesis]] (a patient holder with non-redeemable capital can sit in small/mid names that constrained arb capital can't) and for not bailing the moment something "looks wrong." The structural edge is *plausible, not automatic*: with no redemptions, no margin calls, and no quarterly performance gate, you *can* hold through divergences that force levered funds out — **but only when the divergence is genuinely forced-selling / sentiment and the fundamentals are intact** (see the falsification below). Absent that, there is no edge here — just a losing position.
+**How to apply.** This is the *intellectual justification* for two instincts: the [[wait-for-deal-thesis]] (a patient holder with non-redeemable capital can sit in small/mid names that constrained arb capital can't) and for not bailing the moment something "looks wrong." The structural edge is *plausible, not automatic*: with no redemptions, no margin calls, and no quarterly performance gate, you *can* hold through divergences that force levered funds out — **but only when the divergence is genuinely forced-selling / sentiment and the fundamentals are intact** (see the falsification below). Absent that, there is no edge here — just a losing position.
 
 **Decision-rule translation (with the falsification up front).**
 - **The trap:** "mispricing widens because the market is constrained" and "mispricing widens because I am wrong" look identical in the price. C10 only applies in the first case.
@@ -22,6 +22,6 @@
 
 **Tension / failure mode.** This is the single most dangerous note in the catalog, because it can rationalize loss aversion ([[C6 - Disposition Effect]]). The guardrail is the falsification line above: limits-to-arbitrage without a live falsification condition is just an excuse. Patience is an edge only when the thesis is right; when it's wrong, patience is the disposition effect wearing a finance-paper costume.
 
-**Links.** [[Wait-for-deal thesis]] · [[C1 - Publication & Arbitrage Decay]] · [[C6 - Disposition Effect]]
+**Links.** [[wait-for-deal-thesis]] · [[C1 - Publication & Arbitrage Decay]] · [[C6 - Disposition Effect]]
 
 **Verification.** CONFIRMED 2026-06-06 against primary source (Shleifer & Vishny 1997 JF, Stanford PDF + Wiley/JSTOR masthead). Citation (52(1):35–55), the "most constrained when they have the best opportunities" thesis, and the authors' own caveat that PBA's real-world significance is unsettled — all verified verbatim.

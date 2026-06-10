@@ -18,17 +18,11 @@ reasoning lives here.
 | `extended-with-vs-without-catalyst.md` | "Extended" is two different signals — repricing vs. FOMO — and only the business change tells them apart. |
 | `catalyst-payoff-shape-sizing.md` | Size into a catalyst by its payoff *shape*, not the direction you hope it moves. |
 | `macro-cohort-confirmation.md` | Idiosyncratic weakness is information; cohort weakness is liquidity. Add only on the second. |
-| `Wait-for-deal thesis.md` | A worked example of a *sector-level* thesis written down for the skills to apply. |
+| `wait-for-deal-thesis.md` | A worked example of a *sector-level* thesis written down for the skills to apply. |
 | `ai-infra-thesis-kill-switches.md` | The three numerical thresholds that would actually break the AI-infra cycle — vs. noise. |
-| `ai-capex-payback-window.md` | The capex ROIC J-curve: FCF compression is the *expected* shape, not a thesis break. Size to the payback horizon. |
 | `orchestration-vs-substrate.md` | Where the AI margin lives — physical substrate vs. the intelligence layer — and who's hedged across both. |
-| `agentic-ai-compute-mix.md` | Agentic workloads shift the compute *mix* toward CPU without eating GPU demand — first-party ARM silicon is the tell. |
 | `ouroboros-economy-circular-financing.md` | AI dollars circulate intra-cohort; ranks which names are most fragile if external revenue lags. |
-| `permitting-as-binding-constraint.md` | Political consent can't be bought — pre-permitted footprints earn a scarcity premium; the macro still gets built. |
-| `AI Energy Thesis.md` | Power is the binding constraint; on-site generation (BTM gas now, SMRs later) has durable pricing power. |
-| `warrant-conditionality-equity-announcements.md` | Announced "equity injections" are mostly option value — size off committed cash, read the signal separately. |
-| `pre-earnings-cross-print-playbook.md` | Coordinating cash, cohort-information flow, and sequencing when ≥2 prints land in ~5 trading days. |
-| `Nvidia - AI Cycle Durability and GPU Economics.md` | A labeled *example* of a single-name thesis — mechanical claim, confirm/break conditions, dated refresh. |
+| `ai-energy-thesis.md` | Power is the binding constraint; on-site generation (BTM gas now, SMRs later) has durable pricing power; permitting/political consent as the constraint one layer up. |
 
 ## `research/` — empirical-priors catalog
 

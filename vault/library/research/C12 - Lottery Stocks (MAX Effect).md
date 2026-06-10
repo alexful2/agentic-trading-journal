@@ -22,6 +22,6 @@
 
 **Tension / failure mode.** Two deliberate tensions: (1) vs [[C4 - Momentum and Trend Persistence]] — medium-horizon cumulative winners persist, yet extreme single-*day* spikes predict underperformance; the reconciliation is trend vs blow-off. (2) vs [[C10 - Limits to Arbitrage]] — C10 says a patient holder can be *paid* in deal-driven small caps; C12 says lottery demand is *overpriced*. Resolution: you're paid for the **wait-for-deal catalyst**, not for the lottery payoff profile. If you can't name the catalyst, MAX wins and the position is just overpaying for a spike.
 
-**Links.** [[C4 - Momentum and Trend Persistence]] · [[C10 - Limits to Arbitrage]] · [[C8 - Kelly Criterion and Position Sizing]] · [[Wait-for-deal thesis]]
+**Links.** [[C4 - Momentum and Trend Persistence]] · [[C10 - Limits to Arbitrage]] · [[C8 - Kelly Criterion and Position Sizing]] · [[wait-for-deal-thesis]]
 
 **Verification.** CONFIRMED 2026-06-06 against primary source (Bali-Cakici-Whitelaw 2011 JFE, NYU Stern PDF). Raw spread −1.03%/mo (t=2.83), 4-factor alpha −1.18%/mo (t=4.71), sample 1962–2005, IVOL-reversal result — all match. **Correction vs draft:** headline MAX = single highest daily return (not the 5-day average, which is the MAX(5) robustness variant); and the risk-adjusted spread (−1.18%/mo) is *larger* than the drafted "−0.65 to −1.0%" range.

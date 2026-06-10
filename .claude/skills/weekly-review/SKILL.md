@@ -66,11 +66,11 @@ This skill does **only** macro synthesis. It does not scan `notes/` or
 
 **`vault/library/` — light pointer-read only:**
 - List file names. Do not read every file. The purpose is to know what
-  thesis areas the user has articulated (e.g., "Wait-for-deal thesis.md",
-  "Broader AI beliefs.md").
+  thesis areas the user has articulated (e.g., "wait-for-deal-thesis.md",
+  "ai-energy-thesis.md").
 - If during synthesis you want to cite a specific library entry, read
   that single file then. Don't preload the whole directory.
-- **Do read `vault/library/Wait-for-deal thesis.md`** in full before
+- **Do read `vault/library/wait-for-deal-thesis.md`** in full before
   Step 3's Wait-for-Deal Watch — that's the actual thesis you're
   applying, so load it once.
 

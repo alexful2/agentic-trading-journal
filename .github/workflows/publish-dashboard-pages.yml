@@ -1,9 +1,12 @@
 name: Publish Dashboard Pages
 
 on:
-  push:
-    branches:
-      - main
+  # Manual-only by default: publishing requires a DASHBOARD_PAGES_TOKEN secret
+  # and a real target repo below — without them the run just fails. Re-enable
+  # push-triggered publishing by uncommenting once both are configured:
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 permissions:

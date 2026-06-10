@@ -164,7 +164,7 @@ High" tag in the calendar was based on a marketing pitch that doesn't
 hold up against the S-1's actual revenue mix. Be honest — that often
 flips the verdict to SKIP.}}
 
-**Cited library frameworks:** {{[[Wait-for-deal thesis]], [[Broader AI beliefs]], etc.}}
+**Cited library frameworks:** {{[[wait-for-deal-thesis]], [[ai-energy-thesis]], etc.}}
 
 ---
 

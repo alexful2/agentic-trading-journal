@@ -21,4 +21,4 @@ The three switches above all break the *buildout*. There is a fourth path that b
 
 ---
 # References
-- [[AI Energy Thesis]]
+- [[ai-energy-thesis]]
