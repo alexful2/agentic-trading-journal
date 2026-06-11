@@ -46,40 +46,79 @@ today's date:
 Display as `YYYY-QN` (e.g., `2026-Q1`). Compute the quarter's date range
 (three calendar months) for filtering inputs.
 
+**Partial-quarter runs.** If the user explicitly names the current,
+still-in-progress quarter (e.g., "run quarterly review for Q2 2026" in
+mid-June), run it as a partial-quarter review: add a
+`note: partial-quarter run (...)` line to the frontmatter and a banner
+under the title stating the execution date and which inputs aren't
+captured yet (e.g., prints later in the quarter, end-of-quarter
+refreshes). The output filename is unchanged (`YYYY-QN.md`) — a later
+end-of-quarter rerun **overwrites** the partial file deliberately; the
+partial run is an early draft of the same record, not a separate
+artifact.
+
 ### Step 2: Load Inputs for Calibration Pass
 
 **Closed trades (`vault/library/*Close.md`):**
 - List files matching pattern `TICKER - YYYY-MM-DD Close.md` (following
-  the trade-close template).
-- Filter to closes where the `closed` date in frontmatter falls within
-  the target quarter OR in the quarter immediately preceding (to catch
-  trades that closed right at the boundary).
-- For each: read frontmatter (ticker, opened, closed, pnl_pct, outcome)
-  and the Calibration notes section.
+  `vault/templates/trade-close-template.md`).
+- The close template has **no YAML frontmatter** — do not look for
+  `closed:` / `pnl_pct:` / `outcome:` keys (they don't exist). Parse the
+  structured body instead:
+  - **Ticker + close date** from the filename and the `# TICKER — Closed
+    YYYY-MM-DD` heading.
+  - **Entry / Exit dates, Holding period, P&L, Position size** from the
+    `## Trade Summary` bullet block.
+  - **Deep-dive verdicts during tenure** and **Severity ≥4 alerts during
+    tenure** from the `## Thesis Recap` lists.
+  - **Outcome** (win / loss / breakeven) is derived from the P&L sign in
+    Trade Summary — there is no stored outcome field.
+  - `## Calibration Notes` (System-vs-reality + Emotional) and
+    `## Attribution: Alpha vs. Beta` are the qualitative input to Step 4.
+- Filter to closes whose **Exit date** (from Trade Summary) falls within
+  the target quarter OR the quarter immediately preceding (to catch trades
+  that closed right at the boundary).
 
 **Deep-dives that were current at each close:**
-- For each closed trade, find the most recent `vault/deep-dives/TICKER-*.md`
-  file whose date is ≤ the close date. This is the last verdict the
-  system had on record at the time of exit.
-- Extract verdict, date, and key conditions.
+- **Read `vault/deep-dives/_verdicts.md` (the append-only verdict
+  ledger), not the deep-dives folder.** Deep-dive auto-cleanup deletes
+  superseded files, so only the most recent file per ticker survives on
+  disk — verdict history exists *only* in the ledger.
+- For each closed trade, take the latest ledger row whose date is ≤ the
+  close date: that's the verdict, date, and price-at-verdict the system
+  had on record at exit.
+- Read the surviving deep-dive file for key conditions only if it is the
+  same file the ledger row points at; otherwise the conditions are gone
+  and you note "conditions not recoverable (file superseded)".
 
 **Daily alerts covering each trade's tenure:**
-- For each closed trade, list `vault/reports/daily/*.md` files whose
-  date is between `opened` and `closed`.
-- Extract flagged items (sev ≥3) naming the ticker, with severity and
-  action line.
+- For each closed trade, list daily reports whose date is between the
+  Entry and Exit dates. **Read recursively** — daily reports may be
+  filed in month subfolders (e.g. `vault/reports/daily/April 2026/`), so
+  glob `vault/reports/daily/**/*.md`, not just the top level.
+- Extract items naming the ticker, with their action line. Note: the
+  daily report format dropped explicit per-item severity tags around late
+  Apr 2026 (it moved to a sectioned narrative: Price Levels Hit / News /
+  Verdict Drift / Macro). For tagged (older) reports, capture the severity;
+  for untagged reports, infer materiality from which section the item
+  appears in and surface it regardless.
 
 **Pre-earnings files whose print date falls in the target quarter:**
-- List `vault/reports/pre-earnings/*.md` where the `print_date` frontmatter
-  is within the target quarter (regardless of whether the ticker is in a
-  closed trade). These are the pre-commit plan artifacts — they get their
-  own calibration row in Step 4 even if the position is still open.
+- List `vault/reports/pre-earnings/*.md`. The print date is encoded in the
+  filename (`TICKER-PRINTDATE-{initial,gate}.md`) — derive it from there,
+  not from frontmatter. Keep files whose print date is within the target
+  quarter (regardless of whether the ticker is in a closed trade). These
+  are the pre-commit plan artifacts — they get their own calibration row
+  in Step 4 even if the position is still open.
 - For each unique `(ticker, print_date)` pair, run:
   ```bash
   python .claude/scripts/score_print.py --ticker TICKER --print-date YYYY-MM-DD
   ```
-  The script picks the gate file if present, falls back to initial,
-  parses the Scenario Ladder, fetches the realized 5-trading-day
+  The script parses the Scenario Ladder from the gate file, falling back
+  to the initial file when the gate carries only a Pre-Commit Plan (gate
+  files commonly defer the ladder to the initial — when this happens the
+  JSON includes a `ladder_fallback` note and `source_mode: "initial"`). It
+  then fetches the realized 5-trading-day
   post-print move from Yahoo, and emits JSON with: scenarios,
   `spot_at_print_close`, `spot_at_horizon_close`, `realized_move_pct`,
   `matched_scenario` (the row whose price zone contained the realized
@@ -116,12 +155,17 @@ Proceed to echo-chamber audit.
 
 ### Step 3: Load Inputs for Echo-Chamber Audit
 
-**Daily alerts:** last 90 days of `vault/reports/daily/*.md`.
+**Daily alerts:** last 90 days of daily reports. Glob recursively
+(`vault/reports/daily/**/*.md`) — reports may be filed in month
+subfolders (e.g. `April 2026/`), and a 90-day window routinely reaches
+back into one.
 
 **Weekly reviews:** last ~13 `vault/reports/weekly/*.md` files.
 
-**Deep-dives:** all files in `vault/deep-dives/` whose date falls in the
-target quarter.
+**Deep-dives:** the `vault/deep-dives/_verdicts.md` ledger rows whose
+date falls in the target quarter (auto-cleanup means the folder itself
+only holds the latest file per ticker), plus the surviving files for
+qualitative framing.
 
 Do not load notes/ or library/ for the audit — those are inputs to the
 system, not outputs. The audit is about what the system produces.
@@ -136,12 +180,14 @@ For each closed trade with a deep-dive anchor:
   - `ADD → loss`: verdict was wrong (or timing was off)
   - `REDUCE → win`: verdict was wrong in the other direction
   - `HOLD → win`: aligned (you held, it worked)
-- **Severity vs. materiality:** Were the sev ≥3 alerts during the trade
-  the ones that actually mattered to the outcome? Or did the system
-  miss the key event (covered it at sev ≤2, or not at all), or
-  over-flag noise?
-- **User's own notes:** Did the `Transferable lesson` in the close file
-  point to a system failure, a user failure, or an unknowable?
+- **Severity vs. materiality:** Were the alerts during the trade the ones
+  that actually mattered to the outcome? Or did the system miss the key
+  event (under-scored or not covered at all), or over-flag noise? For
+  reports that still carry severity tags, check whether the key event was
+  scored ≥3; for untagged newer reports, check whether it surfaced at all.
+- **User's own notes:** Did the `## Calibration Notes` and `## Lessons`
+  sections of the close file point to a system failure, a user failure, or
+  an unknowable?
 
 **Aggregate patterns across all closed trades in the quarter:**
 - Any systematic directional bias? (e.g., "verdicts skewed ADD on AI
@@ -213,6 +259,12 @@ emit a row:
   how many were retracted at the next refresh? **If >30%, the H2 gate
   is too lenient** — the 2+ independent Tier-A signal rule is being
   applied too generously. Flag as a system-calibration finding.
+  **Conversely, if H2 was never proposed across the quarter (0% clearance),
+  retraction rate is undefined, not 0%-good** — say so explicitly. Early on
+  (first-cycle builds) 0% clearance is expected and healthy. But if a full
+  year of refreshes never once clears the gate, the "Ahead / Undisclosed
+  Scope" frame is adding no decision value and the gate may be miscalibrated
+  *strict* — surface it as a watch item.
 - **Watch-list hit rate.** Across all prior-refresh 30/60/90-day items
   that resolved this quarter, what fraction were confirmed (vs. refuted
   or expired silently)? Low hit rate suggests the falsification register
@@ -235,12 +287,24 @@ Scan the loaded reports for:
   Pick 2–3 recurring themes and quote how they're described in month
   1 vs. month 3. If the wording is near-identical, flag it.
 - **Verdict stability:** How often did deep-dive verdicts change on
-  the same ticker across the quarter? Zero changes might mean
-  conviction — or might mean the system isn't updating on new data.
-- **Severity clustering:** Count severity distribution across all
-  daily alerts this quarter. If everything is clustered at sev 3 (the
-  threshold), that's miscalibration — the system may be inflating to
-  meet the surfacing bar.
+  the same ticker across the quarter? Compute this from the
+  `_verdicts.md` ledger — on-disk deep-dive files only show the latest
+  verdict per ticker. Zero changes might mean conviction — or might
+  mean the system isn't updating on new data. Pair verdict streaks with
+  the ledger's price-at-verdict column: an unchanged WATCH while the
+  price ran 30%+ is a different finding than an unchanged WATCH in a
+  flat tape.
+- **Severity clustering:** For daily reports that still carry per-item
+  severity tags (the format used through ~late Apr 2026), count the
+  severity distribution. If everything clusters at sev 3 (the threshold),
+  that's miscalibration — the system may be inflating to meet the
+  surfacing bar. **Newer reports dropped explicit per-item severity tags**
+  (sectioned narrative: Price Levels Hit / News / Verdict Drift / Macro),
+  so the histogram can't be computed for them — in that case, say
+  "severity not traceable in current daily format" and instead eyeball
+  surfaced-item *density* (items per report, and how many are `none`-action
+  vs. actionable) as a rough proxy. Flag the missing-severity-trace itself
+  as a measurement gap worth noting.
 - **Self-reference:** How often did a weekly review cite a prior
   weekly review's framing rather than re-deriving from that week's
   news? Some self-reference is healthy; constant self-reference is
@@ -248,6 +312,28 @@ Scan the loaded reports for:
 
 Output format: 3–5 observations, each one line. No grand theory. If
 the system looks fine, say "No significant drift observed."
+
+### Step 5b: Prior-Quarter Follow-Through
+
+Read the most recent prior report in `vault/reports/quarterly/` (if
+any). For each of its **Key Takeaways**, classify what happened since:
+
+- **resolved** — the suggested change was made (check the relevant
+  skill/template file or vault artifact), or the flagged pattern did
+  not recur this quarter.
+- **recurred** — the same pattern is present again in this quarter's
+  data. A finding that recurs two quarters running is escalated: name
+  the specific prompt, template, or script that needs to change, not
+  just the pattern.
+- **not assessable** — the substrate to judge it still doesn't exist
+  (e.g., still no closed trades).
+
+Emit one bullet per prior takeaway. This is what makes the quarterly
+review a loop instead of a series of disconnected snapshots — without
+it, findings have no follow-through mechanism.
+
+First-ever run (no prior quarterly report on disk): skip with a
+one-liner.
 
 ### Step 6: Write Output
 

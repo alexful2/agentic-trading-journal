@@ -11,6 +11,8 @@ quarter: {{YYYY-QN}}
 type: quarterly-system-review
 closes_analyzed: {{count}}
 reports_scanned: {{count}}
+{{note: partial-quarter run (…) — only when run mid-quarter; omit on
+full-quarter runs}}
 ---
 
 # Quarterly System Review — {{YYYY-QN}}
@@ -18,13 +20,19 @@ reports_scanned: {{count}}
 > This report audits the trading-journal system, not the portfolio. It
 > checks whether prior verdicts and severities aligned with outcomes,
 > and whether the system's framing is evolving or recycling.
+{{If partial-quarter: add a second blockquote paragraph — execution
+date and which inputs aren't captured yet. A later end-of-quarter
+rerun overwrites this file.}}
 
 ---
 
 ## Calibration Pass
 
-{{If no closed trades this quarter:
-"No closed trades this quarter — calibration pass skipped."}}
+{{If no closed trades AND no pre-earnings prints AND no
+execution-thesis refreshes this quarter: "No closed trades,
+pre-earnings runs, or execution-thesis refreshes this quarter —
+calibration pass skipped." Otherwise run the subsections that have
+substrate and say plainly which ones don't.}}
 
 ### Closed trades & verdict alignment
 
@@ -87,6 +95,18 @@ verdict stability, severity clustering, and self-reference.}}
 - **Self-reference:** {{…}}
 
 <!-- If nothing notable: "No significant drift observed." -->
+
+---
+
+## Prior-Quarter Follow-Through
+
+{{One bullet per Key Takeaway in the previous quarterly report:
+**resolved** / **recurred** / **not assessable**, with a one-line
+justification. Recurred-twice findings name the specific prompt,
+template, or script to change. First-ever run: "No prior quarterly
+report — follow-through starts next quarter."}}
+
+- {{prior takeaway}} — {{resolved/recurred/not assessable}}: {{…}}
 
 ---
 

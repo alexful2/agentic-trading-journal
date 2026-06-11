@@ -58,13 +58,21 @@ def _fetch_history(ticker, start, end):
 
 
 def _find_pre_earnings_file(ticker, print_date):
-    """Prefer gate, fall back to initial."""
+    """Return all on-disk files for this print, preferred (gate) first.
+
+    Gate files lock in orders T-1/day-of and often carry only a Pre-Commit
+    Plan, deferring the Scenario Ladder to the initial file. So the caller
+    parses the ladder from the preferred file but falls back to the next
+    file when the preferred one has no ladder. Returns a list of
+    (path, mode) tuples, gate before initial.
+    """
     base = PRE_EARNINGS_DIR / f"{ticker.upper()}-{print_date}"
+    found = []
     for suffix in ("gate", "initial"):
         p = Path(f"{base}-{suffix}.md")
         if p.exists():
-            return p, suffix
-    return None, None
+            found.append((p, suffix))
+    return found
 
 
 def _parse_scenario_ladder(text):
@@ -190,22 +198,37 @@ def main():
         "horizon_trading_days": args.horizon,
     }
 
-    src_path, mode = _find_pre_earnings_file(ticker, args.print_date)
-    if not src_path:
+    candidates = _find_pre_earnings_file(ticker, args.print_date)
+    if not candidates:
         out["error"] = (
             f"no pre-earnings file at "
             f"{PRE_EARNINGS_DIR}/{ticker}-{args.print_date}-{{gate,initial}}.md"
         )
         json.dump(out, sys.stdout, indent=2)
         sys.exit(1)
+
+    # Parse the ladder from the preferred (gate) file; if it carries no
+    # ladder (gate files often defer it to the initial file), fall back.
+    scenarios = []
+    src_path, mode = candidates[0]
+    for cand_path, cand_mode in candidates:
+        parsed = _parse_scenario_ladder(cand_path.read_text(encoding="utf-8"))
+        if parsed:
+            scenarios, src_path, mode = parsed, cand_path, cand_mode
+            break
     out["source_file"] = str(src_path).replace("\\", "/")
     out["source_mode"] = mode
-
-    text = src_path.read_text(encoding="utf-8")
-    scenarios = _parse_scenario_ladder(text)
+    if mode != candidates[0][1]:
+        out["ladder_fallback"] = (
+            f"preferred '{candidates[0][1]}' file had no Scenario Ladder; "
+            f"scored against '{mode}' file"
+        )
     out["scenarios"] = scenarios
     if not scenarios:
-        out["error"] = "could not parse Scenario Ladder table from source file"
+        out["error"] = (
+            "could not parse Scenario Ladder table from any pre-earnings "
+            f"file for {ticker} {args.print_date}"
+        )
         json.dump(out, sys.stdout, indent=2)
         sys.exit(1)
 
@@ -237,7 +260,7 @@ def main():
     anchor_date, anchor_close = _walk_to_trading_day(rows, print_date, 0)
     target_date, target_close = _walk_to_trading_day(rows, print_date, args.horizon)
     if anchor_close is None or target_close is None:
-        out["error"] = "insufficient trading days in Stooq result"
+        out["error"] = "insufficient trading days in Yahoo result"
         json.dump(out, sys.stdout, indent=2)
         sys.exit(1)
 
