@@ -218,6 +218,21 @@ count. Columns: scenario, probability, price zone, $ move from spot, $
 P&L on position, **pre-commit action**. The core artifact — it's what
 the Pre-Commit Plan rolls up.
 
+**Set the top zone wide enough that a clean beat doesn't blow past it
+(quarterly-review calibration).** A recurring miss is that prints resolve
+in or *above* the top tier of the ladder, often landing in the
+lowest-probability upside scenario — the top price zone was anchored to
+pre-print spot and went stale the moment the stock gapped. Fix the
+anchoring, not just the probabilities: the top (blowout) zone's *upper*
+bound should sit at **spot × (1 + implied move)** at minimum, and wider
+when realized history exceeds the implied move (`historicalRealized.max`
+from Step 2) — a blowout-and-raise routinely clears the one-sigma straddle.
+If the top zone's ceiling is inside the implied move, you've set it too
+low; don't leave the blowout scenario as a thin tail when the straddle
+says a move that size is a ~1-in-6 event — that's the modal good-print
+outcome, not the tail. State the top-zone ceiling explicitly so the gate
+run can re-anchor it post-gap.
+
 **3d. Rotation Check — [[Opportunity-cost lens]]** — the capital at tail
 risk is not free; it could be deployed to a Tier 1 watchlist name instead.
 This section names 1–2 specific rotation candidates (from Tier 1 **and**

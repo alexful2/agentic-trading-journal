@@ -129,6 +129,19 @@ complicate the core thesis? **"Confirms" is not the default answer.**
 Honest null is fine — "nothing this week materially moves the thesis" is
 a valid result.
 
+**Before you write "confirms," name the disconfirmer (anti-recycling
+gate, quarterly-review calibration).** A pressure test that runs week
+after week with the same "Confirmed" verdict in near-identical wording
+isn't discriminating — it's a frame being re-applied rather than
+re-derived. So in one line, state **what *this week* would have had to
+show to flip the verdict to Challenged** — the concrete signal that
+didn't appear (e.g., "a hyperscaler guiding capex *down*", "a major
+energization slipping a quarter", "a demand-side pullback"). If you can't
+name a disconfirmer the week could plausibly have produced, the verdict
+is non-falsifiable this week — say *that* instead of defaulting to
+"Confirms." Vary the phrasing from last week's file; if you find yourself
+reaching for the prior week's sentence, you're recycling.
+
 **Wait-for-Deal Watch:**
 Survey this week's daily alerts and broad searches for small-to-mid AI
 infrastructure names that fit the wait-for-deal profile — right lane

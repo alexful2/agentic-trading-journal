@@ -402,6 +402,33 @@ source (SEC/FDA/agency/peer-reviewed journal), not a mirror, aggregator, or medi
 source. Mirrors may be used for discovery, but once the fact is promoted into `[A]`, replace the
 mirror with the direct primary URL or downgrade the row.
 
+**Pre-write `[A]`-row gate (REQUIRED — quarterly-review calibration).** A
+recurring `execution-audit` finding is the *same* defect class across builds:
+tier-laundering (rows marked `[A]` that actually cite a mirror/media URL) and
+un-extracted or mis-extracted primary figures (a client count rounded instead
+of quoting the filed number, a capex line misread, an ATM draw double-counted,
+a convertible conversion price left blank when the filing states it). Because
+it recurs, it is enforced here as a gate, not left to per-run discipline.
+**Before writing the file, walk every `[A]` row and confirm both hold; if a
+row fails either test, fix it or downgrade it to `[B]/[C]` — do not write an
+`[A]` row that hasn't passed:**
+
+1. **Direct primary URL.** The cited link resolves to the SEC/FDA/agency/
+   peer-reviewed-journal document itself (e.g. `sec.gov` / `data.sec.gov`,
+   `fda.gov`, the PUC/ERCOT docket, the county permit portal, a DOI/PMID
+   page) — not a press release, aggregator, Substack, or news write-up *about*
+   that document. A mirror used for discovery must be replaced with the direct
+   URL before the row earns `[A]`.
+2. **Extracted filed figure.** The row quotes the *specific number/date/term
+   as filed* (balance, share count at the most recent date, capex line,
+   conversion price, tranche/expiry), not a rounded approximation or a
+   secondary-source paraphrase. "~3,000" when the 10-Q says 2,849 is a fail.
+   If the figure exists in the filing but you didn't open and extract it, the
+   row is not `[A]` yet — open the filing (`edgar_fetch.py` for SEC URLs).
+
+If a figure genuinely can't be located in the primary document after a real
+look, record it as a signal gap rather than citing a secondary number at `[A]`.
+
 **Threshold freshness:** If `projects.md` or a fresh filing changes the numeric baseline that a
 hypothesis/watch-list threshold depends on, recalibrate the threshold in the same refresh. Do not
 carry forward a threshold that was derived from an older rounded approximation.
@@ -490,6 +517,9 @@ Before reporting complete:
 4. If H2 absent: explicit "H2 not proposed this refresh" note with
    closest-candidate signal explained
 5. Each hypothesis has cited evidence rows with [A]/[B]/[C]/[D] tags
+5a. **Every `[A]` row passed the pre-write gate (Step 6):** direct primary
+   URL (not a mirror/aggregator) AND a specific extracted filed figure. No
+   `[A]` row cites a press release or quotes a rounded/secondary number.
 6. Each hypothesis has 30/60/90-day falsification subsection (NOT 3-5
    year — that was the prior skill's failure mode)
 7. Execution read section present and starts the human-facing analysis

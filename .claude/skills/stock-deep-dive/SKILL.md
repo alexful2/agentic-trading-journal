@@ -508,6 +508,18 @@ go in an appendix block at the *bottom* of the section, not the top.
 **Sizing**
 - Given conviction and portfolio composition, how much is appropriate?
   Starter / add / full position / already sized correctly?
+- **Deal-driven asymmetric names — lead with a starter, not a buy-below**
+  ([[wait-for-deal-thesis]]). If this is a pre-deal / pending-catalyst name
+  in the wait-for-deal cohort (small-to-mid AI infra with an unsigned
+  mega-deal in play), the buy-below-and-wait structure *systematically
+  misses* the names where the deal fires — the catalyst sends price up, not
+  into the dip. Lead the sizing with a **1–2% lottery starter at market
+  now**, and make the buy-below level the *add-on-dip*, not the primary
+  entry. Size it as a true lottery ticket, NOT conviction — the cohort
+  hit-rate is a regime-dependent, high-beta artifact that inverts when the
+  cohort rolls over, so keep the [[opportunity-cost lens]] and cohort-confirm
+  on adds. This does not apply to non-deal names — don't manufacture a
+  catalyst to justify a starter.
 
 **The Direct Take**
 2-3 sentences. Directly answer the question the user is most likely
@@ -787,6 +799,13 @@ conflicts with the Step 4 sizing conclusion (e.g., blank-slate says
 overweight but Step 4 landed on HOLD), resolve it here — the verdict must
 face that conflict directly, not smooth it over.** No "it depends." WATCH
 requires a specific price level or catalyst to revisit, not a vague condition.
+**WATCH is not a way to sit out a deal-driven asymmetric name.** If the
+ticker is a pre-deal / pending-catalyst wait-for-deal name, a WATCH verdict
+must pair with the Step 4 Sizing starter rule ([[wait-for-deal-thesis]]):
+recommend a 1–2% lottery starter now and frame the revisit level as the
+add-on-dip, not as a reason to hold all the capital back. A bare "WATCH, buy
+below $X" on a name with a live catalyst is the exact pattern that misses
+deal-driven re-rates — don't repeat it.
 
 **In comparison mode:** replace the standard verdict with an allocation verdict.
 Exactly one of:
