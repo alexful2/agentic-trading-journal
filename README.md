@@ -1,11 +1,11 @@
 # Agentic Trading Journal
 
-A multi-agent investment-research and journaling system, built entirely as
+An investment-research and journaling system, built as
 [Claude Code](https://claude.com/claude-code) **skills** on top of a local
 [Obsidian](https://obsidian.md) vault.
 
 It reads a personal vault of theses, positions, and principles; gathers market
-news; and writes severity-scored alerts, on-demand deep-dive research, weekly
+news; and writes severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point isn't
 stock-picking — it's a **decision-support system that argues back**: a second
 loop that pre-registers falsifiable theses, checks them every day, and audits
