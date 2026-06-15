@@ -32,4 +32,4 @@ why first.
 ---
 # References
 - [[catalyst-payoff-shape-sizing]]
-- [[Opportunity-cost lens]]
+- [[opportunity-cost lens]]

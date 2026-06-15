@@ -29,4 +29,4 @@ sized like a sure thing? The shape decides; the direction of your hope does not.
 ---
 # References
 - [[extended-with-vs-without-catalyst]]
-- [[Opportunity-cost lens]]
+- [[opportunity-cost lens]]

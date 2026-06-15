@@ -21,8 +21,8 @@
 - Periodically check whether the tooling is raising trade count without raising returns — if so, the tooling is net-negative regardless of how good each note reads.
 - Because gross selection ≈ market on average, a realistic edge lives in (a) *not* churning and (b) private informational work (`company-projects` / `execution-thesis`), not in trading more often on public signals.
 
-**Tension / failure mode.** This is the *retail-average* failure mode. A concentrated, patient holder who trades rarely is closer to the *opposite* profile — the live risk there is an apparatus tempting more action, not the holding itself. Don't weaponize this note into "never sell" either: legitimate thesis breaks and [[Opportunity-cost lens]] rotations are not "overtrading."
+**Tension / failure mode.** This is the *retail-average* failure mode. A concentrated, patient holder who trades rarely is closer to the *opposite* profile — the live risk there is an apparatus tempting more action, not the holding itself. Don't weaponize this note into "never sell" either: legitimate thesis breaks and [[opportunity-cost lens]] rotations are not "overtrading."
 
-**Links.** [[C6 - Disposition Effect]] · [[Opportunity-cost lens]] · `company-projects` · `execution-thesis`
+**Links.** [[C6 - Disposition Effect]] · [[opportunity-cost lens]] · `company-projects` · `execution-thesis`
 
 **Verification.** **Barber & Odean 2000 figures CONFIRMED** 2026-06-06 against primary source (JF, author PDF + JSTOR): 11.4% / 18.5% / 17.9% / 18.7% gross / 16.4% net, 66,465 households, 1991–1996 — all match exactly. ("11.4% vs 18.5%" = turnover-quintile contrast; "16.4% vs 17.9%" = avg household net vs market — two *separate* comparisons, kept distinct above.) **The 2001 "Boys Will Be Boys" overconfidence-mechanism paper is CONTEXTUAL / not separately verified** — cited for the mechanism only; no figures are drawn from it.

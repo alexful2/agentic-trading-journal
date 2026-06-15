@@ -77,4 +77,4 @@ pre-IPO names). A weekly opportunity-radar pass is the channel for that — see 
 ---
 # References
 - [[extended-with-vs-without-catalyst]]
-- [[Opportunity-cost lens]]
+- [[opportunity-cost lens]]

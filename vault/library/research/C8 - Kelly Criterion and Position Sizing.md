@@ -23,6 +23,6 @@
 
 **Tension / failure mode.** The whole apparatus assumes a known edge you don't have — so the danger is reverse-engineering a confident probability just to justify a size. If you find yourself doing that, the honest move is to size as if the edge is smaller than it feels. Under-betting only costs growth linearly; over-betting can compound to ruin.
 
-**Links.** [[C9 - Most Stocks Underperform T-Bills]] · [[C11 - Betting Against Beta]] · [[C12 - Lottery Stocks (MAX Effect)]] · [[Opportunity-cost lens]]
+**Links.** [[C9 - Most Stocks Underperform T-Bills]] · [[C11 - Betting Against Beta]] · [[C12 - Lottery Stocks (MAX Effect)]] · [[opportunity-cost lens]]
 
 **Verification.** CONFIRMED 2026-06-06 against primary source (Kelly 1956, Princeton author-permission PDF). Citation (35(4):917–926), the ℓ = q − p growth-optimal result, and the "get ahead and stay ahead with probability one" framing all verified verbatim. Attribution discipline: the over-betting-penalty and fractional-Kelly results are explicitly *post-1956* practitioner/log-growth literature, **not** Kelly's paper — flagged as such above.

@@ -22,6 +22,6 @@
 
 **Tension / failure mode.** The danger is using the "few winners drive everything" half to *justify* concentration while ignoring the "57.4% underperform / modal return −100%" half. Both are the same fact. Hold them together: the upside is real but rare, so the burden of proof on any concentrated bet is high, and the downside (total loss) is the *typical* outcome, not the tail. **Counterweight:** [[C15 - Concentration Done Right]] shows concentration *is* rewarded when it reflects genuine information advantage in under-covered names — that *narrows the gate* a concentrated bet must pass, it doesn't open it.
 
-**Links.** [[C15 - Concentration Done Right]] · [[C5b - Quality Minus Junk]] · [[C8 - Kelly Criterion and Position Sizing]] · [[C13 - Asset Growth and Capex Caution]] · [[Opportunity-cost lens]]
+**Links.** [[C15 - Concentration Done Right]] · [[C5b - Quality Minus Junk]] · [[C8 - Kelly Criterion and Position Sizing]] · [[C13 - Asset Growth and Capex Caution]] · [[opportunity-cost lens]]
 
 **Verification.** CONFIRMED 2026-06-06 against primary source (Bessembinder 2018 JFE, author manuscript). 42.6% outperform / 57.4% underperform, $34.82T, 1,092 firms (4.31%) for all net wealth, modal return ≈ −100%, 1926–2016 — all match. **Correction vs draft:** the count of firms creating *half* of net wealth is **90 (0.36%)**, not 86 — the "86" is a press-release artifact and was dropped.

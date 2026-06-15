@@ -58,7 +58,7 @@ Five scenarios, keyed to the actual 230-share position. Implied move ±20.4% mea
 
 ---
 
-## Rotation Check — [[Opportunity-cost lens]]
+## Rotation Check — [[opportunity-cost lens]]
 
 **Blank-slate anchor** (from [[IREN-2026-04-18]]): 8–10% weight blank-slate, current ~13% — **slightly overweight**. Deep-dive is 7 days old; sizing anchor still fresh.
 
