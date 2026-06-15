@@ -9,7 +9,7 @@ news; and writes severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point is to automate
 and sharpen the research, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports, intraday price triggers),
 while other stuff is meant to be called manually in
-Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop (I'm currently building off this project to create a fully autonomous trading agent).
+Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop, at least yet (I'm currently building off this project to create a fully autonomous trading agent).
 
 The idea of this public repo is for others to start with
 my version and build on top of it, or find some ideas/inspiration to import into your own version
