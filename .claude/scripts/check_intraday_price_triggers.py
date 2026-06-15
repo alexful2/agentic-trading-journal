@@ -125,7 +125,7 @@ def run_checker(watchlist_path: Path, label: str) -> dict:
 
 
 def load_shares_held() -> dict[str, float]:
-    """Return {ticker: shares_held} from Journalit. Trim triggers for tickers
+    """Return {ticker: shares_held} from the trade log. Trim triggers for tickers
     with zero shares held are stale (position closed, watchlist row not yet
     cleaned up) and should be suppressed. Buy triggers are unaffected — the
     user may not hold yet.
@@ -152,7 +152,7 @@ def load_shares_held() -> dict[str, float]:
 
 def suppress_stale_trims(fired: list[dict], shares_held: dict[str, float]) -> tuple[list[dict], list[dict]]:
     """Split fired rows into (kept, suppressed). A trim trigger is suppressed
-    when shares_held for its ticker is zero (or the ticker has no Journalit
+    when shares_held for its ticker is zero (or the ticker has no trade-log
     entry at all — same signal: not held). Buy triggers always pass through.
 
     Empty shares_held dict (position lookup failed) → no suppression."""
@@ -399,8 +399,8 @@ def main() -> int:
         print(f"checked {total} rows, 0 fired.")
         return 0
 
-    # Suppress trim fires for tickers with zero shares held (Journalit is the
-    # source of truth — a trim trigger on a closed position is a stale row
+    # Suppress trim fires for tickers with zero shares held (the trade log is
+    # the source of truth — a trim trigger on a closed position is a stale row
     # the user forgot to clean up, not an actionable alert).
     shares_held = load_shares_held()
     fired, stale_trims = suppress_stale_trims(fired, shares_held)

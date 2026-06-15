@@ -142,7 +142,8 @@ Apply temporal reasoning (see CLAUDE.md) when reading notes — newest wins, fla
 - `vault/reports/daily/` — read the 3 most recent daily alerts (sort by filename
   date descending). Extract any mentions of the target ticker or related
   names. This gives you recent market context and what's been flagged lately.
-- `vault/!Journalit/` — instead of scanning files yourself, call:
+- Trade log (`vault/trades/`, or `vault/!Journalit/` for Journalit users) —
+  instead of scanning files yourself, call:
   ```bash
   python .claude/scripts/get_positions.py --format json
   ```
@@ -152,7 +153,7 @@ Apply temporal reasoning (see CLAUDE.md) when reading notes — newest wins, fla
   size and unrealized %, not vague "you hold this." Other tickers' rows
   give you the cross-position context (how much capital is already tied up
   in adjacent infra names, what's working, what's underwater).
-  If the script errors entirely, fall back to scanning `!Journalit/` files
+  If the script errors entirely, fall back to scanning the trade-log files
   yourself. Don't fabricate a position size.
 - `vault/deep-dives/` — read the most recent deep dive per ticker.
   List all files (format: TICKER-YYYY-MM-DD.md), group by ticker, and
@@ -541,7 +542,7 @@ Answer two questions:
    Not "is the thesis intact," not "is it a hold." Would you initiate a
    position today given everything you know?
 2. **How much would you allocate?** Name a specific % of total portfolio
-   (or specific $ amount if the total is known from Journalit / notes).
+   (or specific $ amount if the total is known from the trade log / notes).
 
 **Anchor in today's numbers.** The blank-slate sizing must cite the
 current price (Step 2) and the ladder built in Step 4 — not a buy-below
@@ -582,9 +583,9 @@ with the Step 4 sizing conclusion, name the conflict — the verdict in
 Step 7 addresses it directly.
 
 **Data sources:**
-- Current position size, cost basis, unrealized P&L: Journalit (via
+- Current position size, cost basis, unrealized P&L: the trade log (via
   `get_positions.py` from Step 1) — don't fabricate.
-- Total portfolio value: Journalit or user-stated. If neither is
+- Total portfolio value: the trade log or user-stated. If neither is
   available, reason in % terms only and note that.
 - Thesis state: the Step 3 verdict (intact / partial / broken).
 

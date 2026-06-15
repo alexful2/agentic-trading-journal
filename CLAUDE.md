@@ -34,6 +34,8 @@ vault/
 │   └── quarterly/  # OUTPUT: Quarterly calibration + echo audit (quarterly-review)
 ├── deep-dives/     # OUTPUT: On-demand stock deep dives + _verdicts.md ledger
 ├── vault-suggestions/ # OUTPUT: Weekly vault-curator suggestions (human review)
+├── trades/         # Trade log: one markdown file per trade (open/add/trim/close).
+│                   # Written by the `log-trade` skill, read by get_positions.py.
 ├── companies/      # Per-ticker SEC-sourced dossiers + mosaic execution research
 ├── watchlist.md    # Tiered stock list + watchlist price triggers + planned tranches
 ├── price-triggers.md # Broader-universe price triggers (non-watchlist names)
@@ -41,10 +43,19 @@ vault/
 └── ipo-calendar.md # Date-anchored IPO reminder layer
 ```
 
-Position tracking is whatever you keep in the vault — these skills can parse a
-`!Journalit/`-style folder of YAML-frontmatter trade files via
-`.claude/scripts/get_positions.py` if present, but that's optional. Adapt the
-parser to your own bookkeeping.
+Position tracking lives in `vault/trades/` — one markdown file per trade, with
+YAML frontmatter (`type: trade`, `tradeStatus`, `instrument`, `entries[]`,
+`exits[]`). The `log-trade` skill writes these for you in-session ("I bought 50
+NVDA at 118.40"); `.claude/scripts/get_positions.py` reads them and aggregates
+open positions (shares, weighted-avg cost, realized + unrealized P&L). See
+`vault/trades/_EXAMPLE-*.md` for the schema. The whole layer is optional — skills
+degrade gracefully if there are no trade files.
+
+This format matches the Journalit Obsidian plugin's export, so Journalit is an
+optional GUI, not a requirement: point the parser at the legacy folder with
+`--trades-dir !Journalit` (it also auto-falls-back to `vault/!Journalit/` if
+`vault/trades/` is absent). Adapt the parser to your own bookkeeping if you keep
+positions elsewhere.
 
 ## How to Load Context
 
@@ -53,7 +64,8 @@ parser to your own bookkeeping.
 1. **Read `vault/watchlist.md`** for the tiered stock list — what's held,
    what's watched, and how deeply to research each. Tier definitions are in
    the file.
-2. **Confirm open positions** from your position-tracking source if available.
+2. **Confirm open positions** via `get_positions.py` (reads `vault/trades/`), or
+   your own position-tracking source if you keep one elsewhere.
 3. **Read `vault/notes/`** to understand the thesis per position, how past
    decisions played out, and any recurring patterns in the decision-making.
 4. **Read `vault/library/`** (except `library/research/`, which is read
@@ -117,6 +129,7 @@ empirical-priors catalog to show the pattern — keep, edit, or delete them.
 | `stock-deep-dive` | Deep analysis of one stock, or a head-to-head comparison of two | `vault/deep-dives/` |
 | `vault-curator` | Weekly vault health — stale beliefs, library gaps, opportunity radar | `vault/vault-suggestions/` |
 | `pre-trade` | Quick pre-order context check (`pre-trade TICKER`) | console |
+| `log-trade` | Log a fill in-session (open/add/trim/close) — no plugin needed | `vault/trades/` |
 | `pre-earnings` | Pre-earnings scenario ladder + implied move + pre-commit orders | `vault/reports/pre-earnings/` |
 | `pre-ipo` | Pre-IPO trade-shape decision for an upcoming offering | `vault/reports/pre-ipo/` |
 | `quarterly-review` | Quarterly calibration vs. closed trades + echo-chamber audit | `vault/reports/quarterly/` |
@@ -183,9 +196,12 @@ Claude Code's built-in web search instead — the skills degrade gracefully.
 
 ### Writable locations
 
-- `vault/reports/{daily,weekly,quarterly,pre-earnings,pre-ipo}/` — skill outputs
+- `vault/reports/{daily,weekly,quarterly,pre-earnings,pre-ipo}/` — skill outputs.
+  `daily/_story-ledger.json` is protected news-analyst state (story-dedup memory), not a report — don't delete.
 - `vault/deep-dives/` — stock deep dives + `_verdicts.md` ledger
 - `vault/vault-suggestions/` — curator output (human review)
+- `vault/trades/` — trade log (one file per trade), written by `log-trade` only.
+  Don't write trade files from other skills. (Journalit users: `vault/!Journalit/`.)
 - `vault/watchlist.md` — price-trigger + planned-tranche tables, via
   `.claude/scripts/apply_watchlist_updates.py` (tier rosters stay manual)
 - `vault/price-triggers.md` — broader-universe triggers (deep-dive auto-upserts

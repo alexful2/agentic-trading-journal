@@ -185,8 +185,8 @@ timing or risk level.}}
 - **Would you buy {{TICKER}} today?** {{Yes / No}}
 - **Blank-slate allocation:** {{X% of portfolio, or $X if portfolio size known}}
 - **Anchor:** {{The price level the blank-slate sizing assumes is fair entry, with source — e.g., "fair at current $42; Buy Below $38 (P/S bear band, this deep dive Step 2)". If you reach for a target from a note older than ~30 days, re-derive from this run's numbers instead.}}
-- **Current allocation:** {{Y% of portfolio, or $Y from Journalit; "unknown" if not tracked}}
-- **P&L since entry:** {{Winning +X% / Losing −X% / Flat / New entry — from Journalit unrealized}}
+- **Current allocation:** {{Y% of portfolio, or $Y from the trade log; "unknown" if not tracked}}
+- **P&L since entry:** {{Winning +X% / Losing −X% / Flat / New entry — from trade-log unrealized}}
 - **Gap source:** {{Appreciation / Depreciation / Thesis revision / Both / N/A — what drove the blank-slate-vs-current delta}}
 - **Bucket (raw):** {{Underweight / Overweight / Exit candidate / Correctly sized}}
 - **P&L-adjusted action:** {{HOLD / ADD / REDUCE — partial / REDUCE — full exit. Apply the Step 4b override matrix. If raw bucket and adjusted action differ, name the override in one phrase, e.g., "Overweight → HOLD (let winner ride, thesis intact)" or "Exit candidate → HOLD (price-only gap, thesis intact)".}}

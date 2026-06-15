@@ -115,7 +115,8 @@ run initial mode first, then gate mode — two files, written in sequence.
 - `vault/deep-dives/{TICKER}-*.md` — read only the most recent. Extract
   verdict, named price levels, thesis summary, and the blank-slate sizing
   from the Blank-Slate Reframe section (anchor for Step 3j).
-- `vault/!Journalit/` — instead of scanning files yourself, call:
+- Trade log (`vault/trades/`, or `vault/!Journalit/` for Journalit users) —
+  instead of scanning files yourself, call:
   ```bash
   python .claude/scripts/get_positions.py --ticker TICKER --format json
   ```

@@ -3,7 +3,7 @@ name: pre-trade
 description: >
   Quick pre-order context check before placing a buy or sell. Reads the
   most recent thesis notes, most recent deep-dive, recent severity ≥3
-  daily alerts, and Journalit position status for a specific ticker.
+  daily alerts, and trade-log position status for a specific ticker.
   Outputs a terminal summary only — no file writes, no searches. This
   is the 20-second "are you sure?" gate, different in shape from the
   full `stock-deep-dive` skill. Usage: `pre-trade TICKER` or "run pre-trade
@@ -50,8 +50,9 @@ Run the position helper for the target ticker:
 python .claude/scripts/get_positions.py --ticker TICKER --format json
 ```
 
-This walks `vault/!Journalit/` and aggregates all OPEN trades for the
-ticker into one row. Extract from the JSON:
+This walks the trade-log folder (`vault/trades/`, or `vault/!Journalit/`
+for Journalit users) and aggregates all OPEN trades for the ticker into one
+row. Extract from the JSON:
 - `shares_held`, `avg_cost`, `first_entry_date`
 - `current_price`, `unrealized_pct`, `unrealized_pnl`
 - `realized_pnl` (gain/loss already booked from partial exits)

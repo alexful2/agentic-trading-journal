@@ -93,9 +93,10 @@ Using only what you read in Step 1 (no new searches), answer:
 
 **Trade consolidation candidates:**
 
-Cross-reference every note in `vault/notes/` against Journalit trade records.
+Cross-reference every note in `vault/notes/` against the trade log (run
+`get_positions.py`, or scan the trade-log folder directly for CLOSED trades).
 For each note that references a specific trade or position:
-- If the corresponding Journalit trade has `tradeStatus: CLOSED`, the trade
+- If the corresponding trade-log file has `tradeStatus: CLOSED`, the trade
   is a candidate for a library arc summary. The original notes stay in
   `notes/` — they are the raw record. The arc summary is a synthesized
   lesson that belongs in `library/` for agents to reference quickly.
@@ -106,7 +107,7 @@ For each note that references a specific trade or position:
 - Do NOT write the summary yourself. Flag the note(s) and provide a
   short template showing what the arc should contain. The user writes
   or approves the final version before it goes to library/.
-- Only flag trades that are definitively closed in Journalit. Open
+- Only flag trades that are definitively closed in the trade log. Open
   positions are never consolidation candidates.
 - **Permanently dismissed trade arcs — do NOT re-flag these:**
   - **VRT-OLD** (VRT-OLD-260326-T1, VRT-OLD-010426-T1, VRT-OLD-080426-T1) — user
@@ -116,7 +117,7 @@ For each note that references a specific trade or position:
     Do not surface VRT-OLD as a trade-arc candidate in any future curator run.
 
 Example flag:
-> **[[DLR - 2026-04-09 Buy]]** — Journalit shows DLR-140126-T1 is CLOSED.
+> **[[DLR - 2026-04-09 Buy]]** — the trade log shows DLR-140126-T1 is CLOSED.
 > Consider writing a trade arc for `library/` capturing: entry rationale,
 > how the VRT/pivot thesis evolved, and exit decision. Original notes stay.
 

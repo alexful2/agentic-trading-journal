@@ -102,13 +102,13 @@ library principle, not a description.}}
 
 ### Trade Consolidation Candidates
 
-<!-- Notes in notes/ that reference closed Journalit trades. -->
+<!-- Notes in notes/ that reference closed trade-log trades. -->
 
 #### [[{{note-filename}}]]
 - [ ] **Write arc to** `library/{{ticker}}-trade-arc.md`
     - 
 
-**Journalit trade:** {{TICKER-DDMMYY-T1}} — `tradeStatus: CLOSED`
+**Trade-log file:** {{TICKER-DDMMYY-T1}} — `tradeStatus: CLOSED`
 **Notes involved:** {{list all related note files by date}}
 **Suggested arc:**
 - Entry ({{date}}): {{thesis at entry}}

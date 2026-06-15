@@ -3,7 +3,7 @@ name: news-analyst
 description: >
   Daily personalized portfolio news alert. Scans the user's Obsidian vault
   (notes/ for stock decisions and theses, library/ for principles and
-  worldview, Journalit/ for open positions), gathers news via the active
+  worldview, trades/ for open positions), gathers news via the active
   agent's web-search tool, and
   writes a severity-scored alert to `vault/reports/daily/`. Only severity
   ≥3 items are surfaced; sev 1–2 are filtered out as noise. The daily
@@ -43,12 +43,13 @@ Apply temporal reasoning (see CLAUDE.md) when reading notes — newest wins, fla
 - Tier 2 = active watchlist (search on rotation).
 - Tier 3 = peripheral interest (passive only, no dedicated searches).
 
-**Cross-reference with `vault/!Journalit/` (via `get_positions.py`):**
+**Cross-reference with the trade log (via `get_positions.py`):**
 
-Run the position helper instead of scanning trade files yourself:
+Run the position helper instead of scanning trade files yourself (it reads
+`vault/trades/`, or `vault/!Journalit/` for Journalit users):
 
 ```bash
-python .claude/scripts/get_positions.py --format json --output positions.json
+python .claude/scripts/get_positions.py --format json
 ```
 
 Returns one row per OPEN position (entries minus exits > 0) with: shares,
@@ -79,17 +80,38 @@ not reflected in watchlist tiers") so the reader can fix one or the other.
   `pre-earnings`, not a daily-news input. Bulk-reading it every run is
   recurring token cost for notes that rarely bear on a given day's headlines.
 
-**From `vault/reports/daily/` (continuity check — last 3 reports):**
+**From the story ledger (durable "already-covered" memory — authoritative):**
+
+Run:
+
+```bash
+python .claude/scripts/story_ledger.py --render
+```
+
+This prints every narrative thread you've surfaced before — keyed on
+ticker + theme, with first/last-seen dates, times-seen, and last severity —
+split into **Active** and **Dormant**. This is your **authoritative
+recently-covered set** and replaces the old 3-day window: it remembers a
+slow-burn story (e.g. a fund's standing stake in a held name) even if it went
+quiet for weeks, so a resurfacing story is recognized as a repeat or an update
+rather than re-flagged as brand-new. You use it in Step 3 to classify each item
+and in Step 5 to record today's sightings. Each thread shows its stable `id`
+(e.g. `nbis-leopold-stake`) — note these; you reuse the `id` in Step 5 when an
+item belongs to an existing thread. If the ledger is empty (first run), every
+item is new — that's expected.
+
+**From `vault/reports/daily/` (recent prose context — last 3 reports):**
 
 List files in `vault/reports/daily/`, sort by filename (`YYYY-MM-DD.md`),
-and read the three most recent. Extract each flagged item's headline +
-ticker + severity. This is your "recently covered" set — you use it in
-Step 3 to suppress pure repeats and flag meaningful updates.
+and read the three most recent. The ledger above is the dedup authority; these
+three files just give you recent *prose/framing* context (how a thread was last
+worded, what action line it carried) so an "(Update)" reads as continuous with
+the last coverage rather than disconnected.
 
 **From `vault/deep-dives/` (verdict context — most recent per watchlist ticker):**
 
 For each Tier 1 and Tier 2 ticker (and any other ticker confirmed as an
-open position in Journalit), find the most recent deep dive file
+open position in the trade log), find the most recent deep dive file
 (`TICKER-YYYY-MM-DD.md`) and read it. If no deep dive exists, skip
 silently.
 
@@ -484,12 +506,35 @@ For each news item, determine connection type:
 
 Think through 2nd and 3rd order effects — that's where the value is.
 
-**Continuity filter (using the recently-covered set):**
-- **Pure repeat** — same story, no new development: drop it entirely.
-- **Meaningful update** — same story with new data/outcome or materially
-  changed severity: keep it, mark "(Update)" after the headline, note
-  what changed vs. last coverage.
-- **New story**: keep as normal.
+**Continuity filter (against the story ledger from Step 1):**
+
+For each candidate item, find the matching thread in the rendered ledger
+(match on ticker + theme — the `id` and summary make this explicit). Then
+classify:
+
+- **Pure repeat** — matches an **Active** thread and brings **no new
+  development** (same fact, just restated by a fresh article): **drop it
+  entirely.** This is the redundancy the ledger exists to kill — a standing
+  fact (a fund's existing stake, an already-announced deal) is not news again
+  just because a new article mentions it. Still record the sighting in Step 5
+  (so the ledger's last-seen stays accurate) — dropping from the report and
+  recording the sighting are separate actions.
+- **Meaningful update** — matches an Active thread but carries a genuinely new
+  data point, outcome, or materially changed severity: **keep it**, mark
+  "(Update)" after the headline, and frame the Why-it-matters line as *what
+  changed today* versus the prior coverage — not a re-statement of the standing
+  fact. Lead with the new wrinkle.
+- **Re-awakening** — matches a **Dormant** thread (went quiet, now resurfacing).
+  Treat like a meaningful update: keep it only if there's an actual new
+  development, and frame it as "back in the flow after N weeks — here's what's
+  new," never as brand-new. A dormant thread resurfacing with no new
+  development is still a pure repeat — drop it.
+- **New story** — no ledger match: keep as normal. It becomes a new thread in
+  Step 5.
+
+When in doubt between pure-repeat and update, ask: *"Is there a fact in
+today's article that wasn't true (or wasn't known) at the last sighting?"* If
+no, it's a pure repeat — drop it.
 
 **Insider-trade calibration (conditional):**
 For any news item about insider transactions (Form 4 sales/buys, 13G/13D
@@ -792,6 +837,48 @@ email:
 
 On quiet days (no sev ≥3 items), still write the two fields — see Step 6's
 subject/preheader rules for how to pick them.
+
+#### Step 5c: Record sightings in the story ledger
+
+After the report file is written, record today's sightings so tomorrow's run
+remembers them. Run one `--upsert` per **story you encountered today**, which
+means:
+
+- Every item you **surfaced** in the report (sev ≥3 news item — not price-level
+  fires, earnings/IPO reminders, drift, or housekeeping; those have their own
+  state). Record the severity you scored it.
+- Every item you **dropped as a pure repeat / no-new-development re-awakening**
+  in Step 3. Recording these keeps the thread's `last_seen` accurate so it
+  doesn't drift to Dormant while it's actually still in the daily flow. Use the
+  severity it would have scored (or its prior `last_severity`).
+
+Do **not** upsert macro one-liners, sev 1–2 noise that isn't a tracked thread,
+or vault-internal reminders.
+
+For each, call:
+
+```bash
+python .claude/scripts/story_ledger.py --upsert '{"id":"<existing-id-or-omit>","ticker":"NBIS","theme":"leopold stake","summary":"one-line what-this-thread-is","severity":3,"date":"YYYY-MM-DD","surfaced":true}'
+```
+
+Rules:
+- **If the item matched an existing thread in the Step 1 render, pass that
+  thread's `id`** — this is the reliable join; don't rely on the fuzzy matcher.
+  Omit `id` only for genuinely new stories (a new thread is created).
+- `ticker` is the held/watched ticker, or omit/null for a cross-cutting macro
+  or thematic thread (e.g. `"theme":"fed rate-cut timing"`, no ticker).
+- `theme` is a short stable phrase (2–5 words). `summary` is the one-line
+  description shown in future renders — keep it current (it's overwritten each
+  sighting, so refresh it when the story evolves).
+- `surfaced` is `true` if it appeared in today's report, `false` if dropped as
+  a repeat.
+- `date` is today's report date.
+
+The command prints `NEW` / `RECURRING` / `REAWAKENED` so you can confirm the
+join worked. Pruning (dormancy flip, overflow) is automatic — no housekeeping
+call needed. If `story_ledger.py` errors, log one line in your final response
+and continue; a ledger write failure must not block the report or email (both
+are already saved).
 
 ### Step 6: Send Email Brief (always)
 

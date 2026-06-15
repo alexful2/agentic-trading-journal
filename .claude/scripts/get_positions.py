@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
 """
-Aggregate open positions from Journalit trade files.
+Aggregate open positions from markdown trade-log files.
 
-Walks vault/!Journalit/**/*.md, parses YAML frontmatter, and aggregates
-per-instrument: total shares held (entries minus exits), entry-weighted
-average cost, realized P&L from partial exits, and (optionally) unrealized
-P&L computed against current Stooq prices.
+Walks the trade-log folder under the vault (default vault/trades/, with
+automatic fallback to vault/!Journalit/ for Journalit users), parses YAML
+frontmatter, and aggregates per-instrument: total shares held (entries minus
+exits), entry-weighted average cost, realized P&L from partial exits, and
+(optionally) unrealized P&L computed against current Stooq prices.
+
+The trade-file schema (one file per trade) is plain markdown frontmatter:
+
+    ---
+    type: trade
+    instrument: NVDA
+    direction: long
+    tradeStatus: OPEN          # OPEN until fully exited, then CLOSED
+    entries:                   # one item per buy (tranches welcome)
+      - { size: 50, price: 118.40, time: 2026-05-12T14:32:00 }
+    exits:                     # one item per sell
+      - { size: 25, price: 131.20, time: 2026-06-09T18:45:00 }
+    ---
+
+This format is compatible with the Journalit Obsidian plugin's export, so you
+can write the files by hand, via the `log-trade` skill, or with Journalit —
+whatever you prefer. Journalit is optional; nothing here requires it.
 
 A trade is included if BOTH:
   - tradeStatus is "OPEN"
@@ -20,6 +38,7 @@ Usage:
     python get_positions.py --no-prices              # skip Stooq calls (faster)
     python get_positions.py --format markdown        # human-readable table
     python get_positions.py --vault vault            # custom vault path
+    python get_positions.py --trades-dir !Journalit  # force a specific folder
 """
 
 import argparse
@@ -116,13 +135,28 @@ def _coerce_yaml_scalar(s):
     return s
 
 
-def _scan_trades(vault_root):
-    """Yield (path, frontmatter_dict) for every trade file under !Journalit/.
-    Skips files without parseable frontmatter or without type=trade."""
-    journalit = vault_root / "!Journalit"
-    if not journalit.exists():
+def _resolve_trades_dir(vault_root, trades_dir=None):
+    """Return the folder to scan for trade files, or None if none exists.
+
+    If trades_dir is given, use it verbatim. Otherwise prefer the neutral
+    `trades/` folder, falling back to `!Journalit/` for Journalit users."""
+    if trades_dir:
+        d = vault_root / trades_dir
+        return d if d.exists() else None
+    for candidate in ("trades", "!Journalit"):
+        d = vault_root / candidate
+        if d.exists():
+            return d
+    return None
+
+
+def _scan_trades(vault_root, trades_dir=None):
+    """Yield (path, frontmatter_dict) for every trade file in the trade-log
+    folder. Skips files without parseable frontmatter or without type=trade."""
+    root = _resolve_trades_dir(vault_root, trades_dir)
+    if root is None:
         return
-    for path in journalit.rglob("*.md"):
+    for path in root.rglob("*.md"):
         try:
             text = path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
@@ -239,6 +273,9 @@ def _to_dt(v):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--vault", default="vault", help="Vault root (default: vault)")
+    parser.add_argument("--trades-dir", default=None,
+                        help="Trade-log folder under the vault. Default: auto "
+                             "(prefers trades/, falls back to !Journalit/).")
     parser.add_argument("--ticker", default=None, help="Filter to one ticker (case-insensitive)")
     parser.add_argument("--no-prices", action="store_true", help="Skip Stooq price fetches")
     parser.add_argument("--format", choices=["json", "markdown"], default="json")
@@ -250,7 +287,7 @@ def main():
         sys.exit(1)
 
     by_ticker = {}
-    for path, fm in _scan_trades(vault_root):
+    for path, fm in _scan_trades(vault_root, args.trades_dir):
         instrument = (fm.get("instrument") or "").upper().strip()
         if not instrument:
             continue
