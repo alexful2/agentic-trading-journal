@@ -4,12 +4,15 @@ An investment-research and journaling system, built as
 [Claude Code](https://claude.com/claude-code) **skills** on top of a local
 [Obsidian](https://obsidian.md) vault.
 
-It reads a personal vault of theses, positions, and principles; gathers market
+The agent reads a personal vault of theses, positions, and principles; gathers market
 news; and writes severity-scored alerts, in-depth research, weekly
-macro syntheses, and quarterly self-audits back into the vault. The point isn't
-stock-picking — it's a **decision-support system that argues back**: a second
-loop that pre-registers falsifiable theses, checks them every day, and audits
-its own calibration over time.
+macro syntheses, and quarterly self-audits back into the vault. The point is to automate
+and sharpen the research, not to let Claude trade entirely for you. Some stuff is fully
+automated research loops (daily news reports, weekly/quarterly reviews, curator reports, intraday price triggers),
+but other stuff is meant to be called manually in
+Claude code (deep dives, company dossier files, etc). The idea of this public repo is for others to start with
+my version and build on top of it, or find some ideas/inspiration to import into your own version
+of this project. 
 
 > **This is a generalized snapshot of a system I run privately.** It's a
 > portfolio / reference implementation meant to show the architecture — not a
@@ -21,8 +24,8 @@ its own calibration over time.
 
 ## Why it's interesting
 
-The individual pieces are simple. The design ideas behind how they fit together
-are the part worth looking at:
+The individual pieces are all simple. The logic and infrastructure behind how they fit together
+is the more interesting part:
 
 - **Skills as composable agents.** Each capability — daily alert, deep dive,
   weekly review, pre-earnings, curation — is a self-contained Claude Code skill
