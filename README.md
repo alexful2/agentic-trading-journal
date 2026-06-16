@@ -66,74 +66,17 @@ empirical priors are starter content — keep, edit, or delete them. Skills read
 whatever is in the vault, so the system becomes *your* journal the moment you
 start writing in it.
 
-### Tracking positions
+### Positions
 
-Open positions live in `vault/trades/` — **one markdown file per trade**, with
-YAML frontmatter. You don't log them by hand: in a session, just say *"I bought
-50 NVDA at 118.40"* (or *"sold half my VRT at 132"*, *"close out DLR at 178"*)
-and the **`log-trade`** skill writes/updates the right file. `get_positions.py`
-then aggregates them — shares held, weighted-avg cost, realized + unrealized
-P&L — and every other skill reads that. The schema (see
-[`vault/trades/_EXAMPLE-NVDA-2026-05-12.md`](vault/trades/_EXAMPLE-NVDA-2026-05-12.md)):
-
-```yaml
----
-type: trade
-instrument: NVDA
-direction: long
-tradeStatus: OPEN          # OPEN until fully exited, then CLOSED
-entries:                   # one per buy — add a tranche by appending an item
-  - size: 50
-    price: 118.40
-    time: 2026-05-12
-exits:                     # one per sell
-  - size: 25
-    price: 131.20
-    time: 2026-06-09
----
-```
-
-This is entirely optional — the skills run fine with no trade files. And it's
-**Journalit-compatible**: the format matches what the Journalit Obsidian plugin
-exports, so if you'd rather log trades in that GUI, keep using it — the parser
-reads both `vault/trades/` and `vault/!Journalit/` when both exist (so history
-and new trades pool together), or force one with `--trades-dir`. Journalit is a
-nice optional front-end; it is not required.
-
----
-
-## Using it
-
-You drive everything in **plain language** inside a Claude Code session — there
-are no commands to memorize. Name a skill or just describe what you want, and
-Claude picks the matching one. A few examples:
-
-```
-run the daily news analysis        → severity-scored alert in vault/reports/daily/
-deep dive NBIS                     → full fundamentals research + verdict
-deep dive NBIS vs IREN             → two deep dives + an allocation call
-pre-trade NBIS                     → 20-second context check before you place an order
-I just bought 5 NBIS at 227        → logs the fill to vault/trades/ (log-trade)
-pre-earnings VRT                   → scenario ladder + pre-commit orders before a print
-run the weekly review              → macro synthesis for the past 7 days
-run quarterly review for Q2 2026   → calibration vs. closed trades + self-audit
-```
-
-**The loop it's built around:**
-
-1. **Daily** — `news-analyst` surfaces only what matters (severity ≥ 3) and
-   suggests deep dives.
-2. **Decide** — `stock-deep-dive` on a flagged name; `pre-trade` as the final
-   gut-check right before you act.
-3. **Act** — `log-trade` records the fill, so every other skill immediately sees
-   the new position, cost basis, and P&L.
-4. **Review** — `weekly-review` synthesizes themes and pressure-tests theses;
-   `quarterly-review` grades past verdicts against closed-trade outcomes and
-   audits the system's own output for drift.
-
-Skills that research or log **write markdown into `vault/`** (see the Output
-column above); `pre-trade` and the calendar fetchers just print to the console.
-Nothing ever contacts a broker — `log-trade` records fills you've already made.
+Open positions live in `vault/trades/` — one markdown file per trade (YAML
+frontmatter with entries/exits and status). You don't log them by hand: tell
+Claude "I bought 50 NVDA at 118.40" and the `log-trade` skill writes the file;
+`get_positions.py` aggregates shares, average cost, and P&L for the other skills
+to read. The whole layer is optional, and the format matches the Journalit
+Obsidian plugin's export — so Journalit users can keep that GUI and point the
+parser at their existing folder instead. See
+[`vault/trades/_EXAMPLE-NVDA-2026-05-12.md`](vault/trades/_EXAMPLE-NVDA-2026-05-12.md)
+for the schema.
 
 ---
 
