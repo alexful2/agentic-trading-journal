@@ -24,11 +24,10 @@ as a base example of an agentic trading journal that you can build on and person
 
 | Skill | What it does | Output |
 |-------|--------------|--------|
-| `news-analyst` | Daily severity-scored portfolio alert (≥3 only) + macro awareness | `vault/reports/daily/` |
-| `stock-deep-dive` | Fundamentals deep dive — council + blank-slate reframe + verdict; single or head-to-head | `vault/deep-dives/` |
+| `news-analyst` | Daily severity-scored portfolio-news alerts + macro awareness. | `vault/reports/daily/` |
+| `stock-deep-dive` | In-depth research report on stock fundamentals — council + blank-slate reframe + verdict | `vault/deep-dives/` |
 | `weekly-review` | Weekly macro synthesis, thesis pressure-test, what-shifted | `vault/reports/weekly/` |
 | `quarterly-review` | Calibration vs. closed trades + echo-chamber audit | `vault/reports/quarterly/` |
-| `pre-trade` | 20-second "are you sure?" context check before an order (no writes) | console |
 | `log-trade` | Log a fill in-session (open / add / trim / close) — no plugin needed | `vault/trades/` |
 | `pre-earnings` | Scenario ladder + implied-move + pre-commit orders for a print | `vault/reports/pre-earnings/` |
 | `pre-ipo` | Trade-shape decision for an upcoming offering | `vault/reports/pre-ipo/` |
@@ -39,6 +38,7 @@ as a base example of an agentic trading journal that you can build on and person
 | `execution-audit` | Adversarial audit of an execution-thesis (run on a different model) | `vault/companies/TICKER/execution-audit.md` |
 | `economic-calendar-fetcher` | Upcoming macro events (FOMC, CPI, GDP, …) | console |
 
+Each feeds back into others through a complex logic pipeline. 
 `CLAUDE.md` is the always-loaded system context that ties them together (vault
 layout, conventions, the rules every skill obeys).
 
