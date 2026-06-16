@@ -52,10 +52,11 @@ open positions (shares, weighted-avg cost, realized + unrealized P&L). See
 degrade gracefully if there are no trade files.
 
 This format matches the Journalit Obsidian plugin's export, so Journalit is an
-optional GUI, not a requirement: point the parser at the legacy folder with
-`--trades-dir !Journalit` (it also auto-falls-back to `vault/!Journalit/` if
-`vault/trades/` is absent). Adapt the parser to your own bookkeeping if you keep
-positions elsewhere.
+optional GUI, not a requirement: the parser reads both `vault/trades/` and the
+legacy `vault/!Journalit/` when both exist (so you can migrate incrementally —
+old history and new log-trade files pool together), or force one with
+`--trades-dir`. Adapt the parser to your own bookkeeping if you keep positions
+elsewhere.
 
 ## How to Load Context
 

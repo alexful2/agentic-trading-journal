@@ -154,18 +154,23 @@ type: trade
 instrument: NVDA
 direction: long
 tradeStatus: OPEN          # OPEN until fully exited, then CLOSED
-entries:                   # one item per buy — add a tranche by appending
-  - { size: 50, price: 118.40, time: 2026-05-12 }
-exits:                     # one item per sell
-  - { size: 25, price: 131.20, time: 2026-06-09 }
+entries:                   # one per buy — add a tranche by appending an item
+  - size: 50
+    price: 118.40
+    time: 2026-05-12
+exits:                     # one per sell
+  - size: 25
+    price: 131.20
+    time: 2026-06-09
 ---
 ```
 
 This is entirely optional — the skills run fine with no trade files. And it's
 **Journalit-compatible**: the format matches what the Journalit Obsidian plugin
-exports, so if you'd rather log trades in that GUI, keep using it and point the
-parser at your folder with `--trades-dir !Journalit` (it also auto-detects
-`vault/!Journalit/`). Journalit is a nice optional front-end; it is not required.
+exports, so if you'd rather log trades in that GUI, keep using it — the parser
+reads both `vault/trades/` and `vault/!Journalit/` when both exist (so history
+and new trades pool together), or force one with `--trades-dir`. Journalit is a
+nice optional front-end; it is not required.
 
 ---
 

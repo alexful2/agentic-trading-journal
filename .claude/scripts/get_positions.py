@@ -2,9 +2,10 @@
 """
 Aggregate open positions from markdown trade-log files.
 
-Walks the trade-log folder under the vault (default vault/trades/, with
-automatic fallback to vault/!Journalit/ for Journalit users), parses YAML
-frontmatter, and aggregates per-instrument: total shares held (entries minus
+Walks the trade-log folder(s) under the vault — the neutral vault/trades/
+and/or the legacy vault/!Journalit/ (Journalit users); if both exist they are
+pooled, so a vault mid-migration counts old and new trades together — parses
+YAML frontmatter, and aggregates per-instrument: total shares held (entries minus
 exits), entry-weighted average cost, realized P&L from partial exits, and
 (optionally) unrealized P&L computed against current Stooq prices.
 
@@ -15,10 +16,14 @@ The trade-file schema (one file per trade) is plain markdown frontmatter:
     instrument: NVDA
     direction: long
     tradeStatus: OPEN          # OPEN until fully exited, then CLOSED
-    entries:                   # one item per buy (tranches welcome)
-      - { size: 50, price: 118.40, time: 2026-05-12T14:32:00 }
-    exits:                     # one item per sell
-      - { size: 25, price: 131.20, time: 2026-06-09T18:45:00 }
+    entries:                   # one per buy (tranches welcome)
+      - size: 50
+        price: 118.40
+        time: 2026-05-12T14:32:00
+    exits:                     # one per sell
+      - size: 25
+        price: 131.20
+        time: 2026-06-09T18:45:00
     ---
 
 This format is compatible with the Journalit Obsidian plugin's export, so you
@@ -135,36 +140,37 @@ def _coerce_yaml_scalar(s):
     return s
 
 
-def _resolve_trades_dir(vault_root, trades_dir=None):
-    """Return the folder to scan for trade files, or None if none exists.
+def _resolve_trades_dirs(vault_root, trades_dir=None):
+    """Return the list of folders to scan for trade files.
 
-    If trades_dir is given, use it verbatim. Otherwise prefer the neutral
-    `trades/` folder, falling back to `!Journalit/` for Journalit users."""
+    If trades_dir is given, use only that (when it exists). Otherwise scan
+    every known trade-log folder that exists — both the neutral `trades/` and
+    the legacy `!Journalit/` — so a vault mid-migration pools old Journalit
+    history with new log-trade files instead of one hiding the other."""
     if trades_dir:
         d = vault_root / trades_dir
-        return d if d.exists() else None
+        return [d] if d.exists() else []
+    dirs = []
     for candidate in ("trades", "!Journalit"):
         d = vault_root / candidate
         if d.exists():
-            return d
-    return None
+            dirs.append(d)
+    return dirs
 
 
 def _scan_trades(vault_root, trades_dir=None):
-    """Yield (path, frontmatter_dict) for every trade file in the trade-log
-    folder. Skips files without parseable frontmatter or without type=trade."""
-    root = _resolve_trades_dir(vault_root, trades_dir)
-    if root is None:
-        return
-    for path in root.rglob("*.md"):
-        try:
-            text = path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            continue
-        fm = _parse_frontmatter(text)
-        if not fm or fm.get("type") != "trade":
-            continue
-        yield path, fm
+    """Yield (path, frontmatter_dict) for every trade file across the trade-log
+    folder(s). Skips files without parseable frontmatter or without type=trade."""
+    for root in _resolve_trades_dirs(vault_root, trades_dir):
+        for path in root.rglob("*.md"):
+            try:
+                text = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            fm = _parse_frontmatter(text)
+            if not fm or fm.get("type") != "trade":
+                continue
+            yield path, fm
 
 
 def _aggregate_position(trades_for_ticker):
