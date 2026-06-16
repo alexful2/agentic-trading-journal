@@ -42,11 +42,17 @@ This is not investment advice; it is bookkeeping.
 
 ## Where trades live
 
-Resolve the trade-log folder the same way the parser does:
+The parser (`get_positions.py`) **pools** two folders: the neutral
+`vault/trades/` and the legacy `vault/!Journalit/`. So:
 
-- If `vault/trades/` exists, use it.
-- Else if `vault/!Journalit/` exists (Journalit user), use that.
-- Else create and use `vault/trades/`.
+- **Opening a NEW position:** always write to `vault/trades/` (create the
+  folder if it doesn't exist) — even in a vault that still has `!Journalit/`
+  history. New positions go to `trades/`; old history stays where it is; the
+  parser counts both. This is the migration path off Journalit.
+- **Add / trim / close to an EXISTING position:** append to wherever that
+  trade's file already lives. A migrated-from-Journalit position keeps living
+  in its `!Journalit/…/TICKER-*.md` file — append there, don't make a
+  duplicate in `trades/`.
 
 One file per trade, named `TICKER-YYYY-MM-DD.md` using the **open date** of the
 trade (the date of the first entry). Adds and trims update that same file.
@@ -83,10 +89,12 @@ Run the position helper for the ticker to see what's already open:
 python .claude/scripts/get_positions.py --ticker TICKER --format json --no-prices
 ```
 
-Also list the trade-log folder for any existing `TICKER-*.md` file. Determine
-which of four cases applies:
+Also list **both** trade-log folders (`vault/trades/` and `vault/!Journalit/`,
+the latter recursively) for any existing `TICKER-*.md` file — an existing
+position may live in either. Determine which of four cases applies:
 
-- **OPEN (new position):** no OPEN trade file for the ticker → create one.
+- **OPEN (new position):** no OPEN trade file for the ticker in either folder →
+  create one in `vault/trades/`.
 - **ADD (tranche):** an OPEN file exists and the action is a buy → append to
   `entries`.
 - **TRIM (partial sell):** an OPEN file exists, action is a sell, and the sell

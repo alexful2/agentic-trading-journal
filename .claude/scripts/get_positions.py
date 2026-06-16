@@ -281,7 +281,7 @@ def main():
     parser.add_argument("--vault", default="vault", help="Vault root (default: vault)")
     parser.add_argument("--trades-dir", default=None,
                         help="Trade-log folder under the vault. Default: auto "
-                             "(prefers trades/, falls back to !Journalit/).")
+                             "(pools trades/ and !Journalit/ when both exist).")
     parser.add_argument("--ticker", default=None, help="Filter to one ticker (case-insensitive)")
     parser.add_argument("--no-prices", action="store_true", help="Skip Stooq price fetches")
     parser.add_argument("--format", choices=["json", "markdown"], default="json")
