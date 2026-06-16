@@ -72,11 +72,10 @@ Open positions live in `vault/trades/` — one markdown file per trade (YAML
 frontmatter with entries/exits and status). You don't log them by hand: tell
 Claude "I bought 50 NVDA at 118.40" and the `log-trade` skill writes the file;
 `get_positions.py` aggregates shares, average cost, and P&L for the other skills
-to read. The whole layer is optional, and the format matches the Journalit
-Obsidian plugin's export — so Journalit users can keep that GUI and point the
-parser at their existing folder instead. See
+to read. See
 [`vault/trades/_EXAMPLE-NVDA-2026-05-12.md`](vault/trades/_EXAMPLE-NVDA-2026-05-12.md)
-for the schema.
+for the schema. Optionally, you could also use the Journalit Obsidian plugin for logging trades,
+which has some nice extra functionality like visual graphs. 
 
 ---
 
