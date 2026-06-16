@@ -60,9 +60,9 @@ pip install -r news-visual/requirements.txt   # yfinance, requests, jinja2, ...
 ```
 
 Then **make the vault yours**: the `vault/` here is a real, anonymized snapshot. Replace
-`vault/notes/`, `vault/watchlist.md`, and friends with your own theses and
+`vault/notes/`, `vault/watchlist.md`, etc with your own theses and
 positions. The `vault/library/` frameworks and `vault/library/research/`
-empirical priors are starter content — keep, edit, or delete them. Skills read
+empirical priors are starter/example content — keep, edit, or delete them. Skills read
 whatever is in the vault, so the system becomes *your* journal the moment you
 start writing in it.
 
