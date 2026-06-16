@@ -93,18 +93,6 @@ the rendered output first (it reads from your vault).
 
 ---
 
-## Design notes & background
-
-A longer write-up of the thinking behind this — why a "second loop that argues
-back," why falsifiable tripwires, why a calibration audit — is planned as a
-companion article. _(link TBD)_
-
-This repo is intentionally a **snapshot**, not a continuously-synced mirror of
-my private vault. Treat it as a reference implementation to read, fork, and
-adapt — not a dependency to track upstream.
-
----
-
 ## Disclaimer
 
 **This is not investment advice.** It's a personal research and journaling
