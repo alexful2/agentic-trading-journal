@@ -121,6 +121,8 @@ And **running it isn't free**: a daily news pass is ~10–15 web searches plus a
 broad vault read, so the scheduled skills carry a recurring token cost — size how
 often you run them accordingly.
 
+Setup is relatively quick. If you hit a problem, just ask your agent — adapting a skill or fixing a config is usually a one-line request. Most of the real time goes into the parts only you can do: wiring up API keys and env vars, loading your trading history (e.g. ask your agent to import a CSV exported from your brokerage into vault/trades/), and journaling your actual theses, beliefs, and principles into the vault.
+
 ### Positions
 
 Open positions live in `vault/trades/` — one markdown file per trade (YAML
