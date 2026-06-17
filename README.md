@@ -9,8 +9,7 @@ news; and writes severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point is to automate
 and sharpen the research process of trading, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports),
 while other stuff is meant to be called manually in
-Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop, though you could design it to be that way. This public repo is meant to serve
-as a base example of an agentic trading journal that you can build on and personalize for yourself.
+Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop, though you could design it to be that way. This public repo is meant to serve as a base example of an agentic trading journal that you can build on and personalize for yourself.
 
 > **This is a generalized snapshot of a system I run privately.** It's a
 > portfolio / reference implementation meant to show the architecture — not a
@@ -33,12 +32,12 @@ as a base example of an agentic trading journal that you can build on and person
 | `pre-ipo` | Trade-shape decision for an upcoming offering | `vault/reports/pre-ipo/` |
 | `vault-curator` | Weekly vault health, belief articulation, opportunity radar | `vault/vault-suggestions/` |
 | `company-dossier` | SEC/EDGAR-sourced per-ticker reference dossier (8 files) | `vault/companies/TICKER/` |
-| `company-projects` | Mosaic execution-tracking against management's claimed schedule | `vault/companies/TICKER/projects.md` |
-| `execution-thesis` | 1–12 month "what are they actually doing?" hypotheses | `vault/companies/TICKER/execution-thesis.md` |
+| `company-projects` | Research a company's upcoming projects in extremely great detail to see how they're coming along. Gather oddly-specific info like job listings, permit approvals/applications, satellite readings, county land-deed records, etc. and triangulate all these data scraps into a coherent hypothesis | `vault/companies/TICKER/projects.md` |
+| `execution-thesis` | 1–12 month "what are they actually doing?" hypotheses (based on company-projects) | `vault/companies/TICKER/execution-thesis.md` |
 | `execution-audit` | Adversarial audit of an execution-thesis (run on a different model) | `vault/companies/TICKER/execution-audit.md` |
 | `economic-calendar-fetcher` | Upcoming macro events (FOMC, CPI, GDP, …) | console |
 
-Each feeds back into others through a complex logic pipeline. 
+Each skill feeds into each other through a complex logic pipeline. 
 `CLAUDE.md` is the always-loaded system context that ties them together (vault
 layout, conventions, the rules every skill obeys).
 
