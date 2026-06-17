@@ -94,7 +94,7 @@ thread is missing.
 
 ## Quickstart
 
-You need [Claude Code](https://claude.com/claude-code) and Python 3.11+.
+You need [Claude Code](https://claude.com/claude-code) (any coding agent should work but I built the vault with/around Claude) and Python 3.11+.
 
 ```bash
 git clone https://github.com/alexful2/agentic-trading-journal
