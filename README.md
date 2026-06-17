@@ -32,7 +32,7 @@ Claude code (deep dives, company dossier files, etc). Nothing is a fully automat
 | `pre-ipo` | Trade-shape decision for an upcoming offering | `vault/reports/pre-ipo/` |
 | `vault-curator` | Weekly vault health, belief articulation, opportunity radar | `vault/vault-suggestions/` |
 | `company-dossier` | SEC/EDGAR-sourced per-ticker reference dossier (8 files) | `vault/companies/TICKER/` |
-| `company-projects` | Research a company's upcoming projects in extremely great detail to see how they're coming along. Gather oddly-specific info like job listings, permit approvals/applications, satellite readings, county land-deed records, etc. and triangulate all these data scraps into a coherent hypothesis | `vault/companies/TICKER/projects.md` |
+| `company-projects` | Research a company's upcoming projects in extremely great detail to see how they're coming along. Gather info like job listings, permit approvals/applications, satellite readings, county land-deed records, etc. and triangulate all into a coherent hypothesis | `vault/companies/TICKER/projects.md` |
 | `execution-thesis` | 1–12 month "what are they actually doing?" hypotheses (based on company-projects) | `vault/companies/TICKER/execution-thesis.md` |
 | `execution-audit` | Adversarial audit of an execution-thesis (use a different model for this for model diversity) - check the validity of hypotheses formed and audit back into execution-thesis file | `vault/companies/TICKER/execution-audit.md` |
 | `economic-calendar-fetcher` | Upcoming macro events (FOMC, CPI, GDP, …) | console |
