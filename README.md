@@ -89,7 +89,7 @@ it is required to use the skills interactively.
 | Integration | Where | What it adds | To remove |
 |-------------|-------|--------------|-----------|
 | **Email briefs** (Resend) | `news-visual/` | Renders the daily report to HTML and emails it | delete `news-visual/`, unset `RESEND_API_KEY` |
-| **Scheduled jobs** (systemd) | `.claude/scripts/vps/` | Runs skills on a timer on a Linux server | delete the dir; or use cron / GitHub Actions instead |
+| **Scheduled jobs** (systemd / cron) | `.claude/scripts/vps/` | Runs skills on a timer. Either locally, via github cronjobs, or a VPS server |
 | **CI / cron fallback** | `.github/workflows/` | GitHub Actions versions of the scheduled jobs | delete the workflows |
 | **Intraday workers** (Pushover) | `.claude/scripts/check_intraday_*.py` | Pure-Python price/news pollers → mobile push (**off by default** — left as reference; the author retired these once the push channel went unused) | delete the scripts |
 | **Public dashboard** | `dashboard/` | Renders vault state to a static HTML page for GitHub Pages | delete the dir |
