@@ -34,12 +34,15 @@ Claude code (deep dives, company dossier files, etc). Nothing is a fully automat
 | `company-dossier` | SEC/EDGAR-sourced per-ticker reference dossier (8 files) | `vault/companies/TICKER/` |
 | `company-projects` | Research a company's upcoming projects in extremely great detail to see how they're coming along. Gather oddly-specific info like job listings, permit approvals/applications, satellite readings, county land-deed records, etc. and triangulate all these data scraps into a coherent hypothesis | `vault/companies/TICKER/projects.md` |
 | `execution-thesis` | 1–12 month "what are they actually doing?" hypotheses (based on company-projects) | `vault/companies/TICKER/execution-thesis.md` |
-| `execution-audit` | Adversarial audit of an execution-thesis (use a different model for this for model diversity) - check the validity of hypotheses formed and audit back into execution-thesis file (after running company projects, execution thesis, and execution thesis audit, the file "execution-thesis" is the final one to look at). | `vault/companies/TICKER/execution-audit.md` |
+| `execution-audit` | Adversarial audit of an execution-thesis (use a different model for this for model diversity) - check the validity of hypotheses formed and audit back into execution-thesis file | `vault/companies/TICKER/execution-audit.md` |
 | `economic-calendar-fetcher` | Upcoming macro events (FOMC, CPI, GDP, …) | console |
 
 Each skill feeds into each other through a complex logic pipeline. 
 `CLAUDE.md` is the always-loaded system context that ties them together (vault
 layout, conventions, the rules every skill obeys).
+
+Logic pipeline between company-dossier/projects/execution thesis is as follows: create company dossier (used generally for all sorts of things) --> company-projects (mosaic substrate) --> execution-thesis (what are they doing?) --> execution-thesis-audit (audit of execution-thesis) --> audit exists as its own file and folds corrections back into execution-thesis
+
 
 ---
 
