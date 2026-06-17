@@ -114,6 +114,13 @@ empirical priors are starter/example content — keep, edit, or delete them. Ski
 whatever is in the vault, so the system becomes *your* journal the moment you
 start writing in it.
 
+Two expectations going in. **The value is proportional to what you put in the
+vault** — out of the box it runs on someone else's anonymized book, and it only
+becomes genuinely useful once the theses, watchlist, and positions are yours.
+And **running it isn't free**: a daily news pass is ~10–15 web searches plus a
+broad vault read, so the scheduled skills carry a recurring token cost — size how
+often you run them accordingly.
+
 ### Positions
 
 Open positions live in `vault/trades/` — one markdown file per trade (YAML
@@ -149,7 +156,16 @@ the rendered output first (it reads from your vault).
 
 > **Note on data sources.** SEC EDGAR requires a real contact email in the
 > `User-Agent` of automated requests — search for `you@example.com` and set your
-> own before running the EDGAR-backed skills (`company-dossier`, etc.).
+> own before running the EDGAR-backed skills (`company-dossier`, etc.). The
+> `economic-calendar-fetcher` skill needs a free
+> [Financial Modeling Prep](https://financialmodelingprep.com) API key
+> (250 requests/day) — set it as `FMP_API_KEY` before running that skill.
+
+> **Note on web search.** Most skills prefer the [Exa](https://exa.ai) MCP server
+> for higher-quality financial search, but fall back to Claude Code's built-in web
+> search when Exa isn't connected — so Exa is **optional**. The one exception is
+> `company-projects`, which currently assumes Exa; without it, ask your agent to
+> swap in the built-in search.
 
 ---
 
