@@ -4,9 +4,8 @@
 # "what just happened?" summary and pushes it to Pushover.
 #
 # Distinct from the stock-deep-dive skill (which runs scripts + 3-advisor
-# council + writes a full file) and from pre-trade (which is order-shaped
-# "are you sure?"). This is alert-shaped — "what just happened?". Memory:
-# [[feedback_auto_trigger_news_shape]].
+# council + writes a full file). This is alert-shaped — "what just happened?".
+# Memory: [[feedback_auto_trigger_news_shape]].
 #
 # Architecture:
 # - Spawned as its own templated systemd unit (news-read@<instance>.service)
@@ -120,8 +119,8 @@ REPO_LOCK="$(repo_lockfile "$REPO")"
 cd "$REPO"
 
 # News-read prompt. Shape: "what just happened?", not "are you sure?".
-# Distinct from the pre-trade skill (which is order-shaped) and from
-# stock-deep-dive (which runs scripts + 3-advisor council). Goal is a
+# Distinct from stock-deep-dive (which runs scripts + 3-advisor council).
+# Goal is a
 # 30-60s read that surfaces (a) what the news actually says, (b) direction
 # and magnitude of impact, (c) whether an order action is warranted now.
 #
@@ -147,7 +146,7 @@ Output exactly 3 short phone-friendly lines. No headers, no markdown, no tables,
 
 (2) impact — direction (POSITIVE / NEGATIVE / NEUTRAL / AMBIGUOUS) and magnitude (small / moderate / large), with a one-clause why tied to the thesis. Magnitude = expected stock impact, not headline drama. Example: 'NEGATIVE, moderate — guidance cut narrows the FY revenue range below consensus, which directly contradicts the growth-acceleration thesis.'
 
-(3) action — NONE / WATCH / ADJUST-LADDER / ESCALATE-TO-PRE-TRADE, with a one-clause why. Decision rule: ESCALATE-TO-PRE-TRADE only if an order action is warranted in the next hour (thesis just broke OR price is already moving past a tranche level). ADJUST-LADDER if the existing buy/trim geometry no longer fits. WATCH if it changes the picture but no order today. NONE if zero action.
+(3) action — NONE / WATCH / ADJUST-LADDER / ESCALATE-TO-DEEP-DIVE, with a one-clause why. Decision rule: ESCALATE-TO-DEEP-DIVE only if an order action is warranted in the next hour (thesis just broke OR price is already moving past a tranche level). ADJUST-LADDER if the existing buy/trim geometry no longer fits. WATCH if it changes the picture but no order today. NONE if zero action.
 
 Be specific. No file writes. No scripts."
 
