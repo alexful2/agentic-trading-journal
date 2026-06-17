@@ -99,7 +99,7 @@ You need [Claude Code](https://claude.com/claude-code) and Python 3.11+.
 ```bash
 git clone https://github.com/alexful2/agentic-trading-journal
 cd agentic-trading-journal
-pip install -r news-visual/requirements.txt   # yfinance, requests, jinja2, ...
+pip install -r requirements.txt   # yfinance, requests
 
 # open a Claude Code session in the repo, then ask for a skill by name, e.g.:
 #   "run the daily news analysis"
