@@ -4,8 +4,8 @@ An investment-research and journaling system, built as
 [Claude Code](https://claude.com/claude-code) **skills** on top of a local
 [Obsidian](https://obsidian.md) vault.
 
-Claude reads a personal vault of theses, positions, and principles; gathers market
-news; and writes severity-scored alerts, in-depth research, weekly
+Your agents read personal vault of theses, positions, and principles, gather market
+news, and write severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point is to automate
 and sharpen the research process of trading, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports),
 while other stuff is meant to be called manually in
@@ -139,7 +139,7 @@ it is required to use the skills interactively.
 | **Email briefs** (Resend) | `news-visual/` | Renders the daily report to HTML and emails it | delete `news-visual/`, unset `RESEND_API_KEY` |
 | **Scheduled jobs** (systemd / cron) | `.claude/scripts/vps/` | Runs skills on a timer. Either locally, via github cronjobs, or a VPS server |  delete `.claude/scripts/vps/`|
 | **CI / cron fallback** | `.github/workflows/` | GitHub Actions versions of the scheduled jobs | delete the workflows |
-| **Intraday workers** (run on VPS; alert via Pushover) | `.claude/scripts/check_intraday_*.py` | Pure-Python price/news pollers → mobile push - run every ~20 mins (**off by default**) | delete the scripts |
+| **Intraday workers** (run on VPS; alert via Pushover) | `.claude/scripts/check_intraday_*.py` | Pure-Python price/news pollers → mobile push. Scheduled to run every ~20 mins. Off by default. | delete the scripts |
 | **Public dashboard** | `dashboard/` | Renders vault state to a static HTML page for GitHub Pages | delete the dir |
 
 Every credential is read from environment variables or a gitignored
