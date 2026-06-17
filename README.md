@@ -132,6 +132,13 @@ to read. See
 for the schema. Optionally, you could also use the Journalit Obsidian plugin for logging trades,
 which has some nice extra functionality like visual graphs. 
 
+Setup is relatively quick, and if you hit a snag, just ask your agent — adapting
+a skill or fixing a config is usually a one-line request. Most of the real time
+goes into the parts only you can do: wiring up API keys and env vars, loading
+your trading history (e.g. ask your agent to import a CSV exported from your
+brokerage into `vault/trades/`), and journaling your actual theses, beliefs, and
+principles into the vault.
+
 ---
 
 ## Optional integrations (scaffolding — wire up or delete)
