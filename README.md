@@ -36,11 +36,11 @@ Claude code (deep dives, company dossier files, etc). Nothing is a fully automat
 | `execution-audit` | Adversarial audit of an execution-thesis (use a different model for this for model diversity) - check the validity of hypotheses formed and audit back into execution-thesis file | `vault/companies/TICKER/execution-audit.md` |
 | `economic-calendar-fetcher` | Upcoming macro events (FOMC, CPI, GDP, …) | console |
 
-Each skill feeds into each other through a complex logic pipeline. 
+Each skill feeds into each other through an established logic pipeline. 
 `CLAUDE.md` is the always-loaded system context that ties them together (vault
 layout, conventions, the rules every skill obeys).
 
-Logic pipeline between company-dossier/projects/execution thesis is as follows: create company dossier (used generally for all sorts of things) --> company-projects (mosaic substrate) --> execution-thesis (what are they doing?) --> execution-thesis-audit (adversarial, different model) --> audit exists as its own file and folds corrections back into execution-thesis
+The order between company-dossier/projects/execution-thesis is as follows: create company dossier (used across many different skills) -> company-projects (mosaic substrate) -> execution-thesis (what are they doing?) -> execution-thesis-audit (adversarial, different model) -> audit exists as its own file and folds corrections back into execution-thesis.
 
 
 ---
