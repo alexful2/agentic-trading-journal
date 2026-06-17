@@ -202,7 +202,7 @@ selectively — none should pull the whole folder.
 | `news-analyst` | `insider-activity.md` only, and only conditionally | When a news item is about insider trading for a ticker with a dossier, calibrate severity against the expected 10b5-1 cadence (planned sales = low signal; outside-plan sales = higher signal). Don't read for non-insider news. |
 | `pre-earnings` | `_meta.md`, `financials.md`, `risks.md`, `insider-activity.md`, `compensation.md` | Trend baseline, what to watch, behavior into print, KPIs comp pays on |
 | `pre-ipo` | `_meta.md`, `overview.md`, `financials.md`, `risks.md`, `leadership.md`, `compensation.md`, `ownership.md` | S-1-derived fact base for the trade-shape decision; insider-activity is typically empty pre-IPO and skipped |
-| Other skills | none currently | Pre-trade, weekly-review, vault-curator, quarterly-review don't need company-fact data |
+| Other skills | none currently | weekly-review, vault-curator, quarterly-review don't need company-fact data |
 
 **Staleness convention:** consumers should check `_meta.md`'s "Last refreshed"
 date. Default threshold: flag if >90 days stale; hard-prompt to rerun if

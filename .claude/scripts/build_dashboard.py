@@ -876,7 +876,6 @@ def render_dashboard() -> str:
     # ----- QUICK COMMANDS -----
     out.append("## Quick Commands")
     out.append("")
-    out.append("- `pre-trade TICKER` — 20-second check before placing an order")
     out.append("- `deep dive TICKER` — full research run")
     out.append("- `pre-earnings TICKER gate` — T-1 / day-of earnings gate")
     out.append("- `pre-ipo TICKER gate` — day-of-pricing IPO gate")

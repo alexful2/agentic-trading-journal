@@ -196,7 +196,6 @@ _RKLB_
 
 ## Quick Commands
 
-- `pre-trade TICKER` — 20-second check before placing an order
 - `deep dive TICKER` — full research run
 - `pre-earnings TICKER gate` — T-1 / day-of earnings gate
 - `pre-ipo TICKER gate` — day-of-pricing IPO gate

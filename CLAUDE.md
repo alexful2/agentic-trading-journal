@@ -129,7 +129,6 @@ empirical-priors catalog to show the pattern — keep, edit, or delete them.
 | `weekly-review` | Weekly macro synthesis — themes, thesis pressure-test, what shifted | `vault/reports/weekly/` |
 | `stock-deep-dive` | Deep analysis of one stock, or a head-to-head comparison of two | `vault/deep-dives/` |
 | `vault-curator` | Weekly vault health — stale beliefs, library gaps, opportunity radar | `vault/vault-suggestions/` |
-| `pre-trade` | Quick pre-order context check (`pre-trade TICKER`) | console |
 | `log-trade` | Log a fill in-session (open/add/trim/close) — no plugin needed | `vault/trades/` |
 | `pre-earnings` | Pre-earnings scenario ladder + implied move + pre-commit orders | `vault/reports/pre-earnings/` |
 | `pre-ipo` | Pre-IPO trade-shape decision for an upcoming offering | `vault/reports/pre-ipo/` |

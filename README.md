@@ -104,7 +104,6 @@ pip install -r requirements.txt   # yfinance, requests
 # open a Claude Code session in the repo, then ask for a skill by name, e.g.:
 #   "run the daily news analysis"
 #   "deep dive on NVDA"
-#   "pre-trade NVDA"
 ```
 
 Then **make the vault yours**: the `vault/` here is a real, anonymized snapshot. Replace

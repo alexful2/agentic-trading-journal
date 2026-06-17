@@ -19,7 +19,7 @@ Record an actual fill into the vault's trade log without leaving the session.
 The natural workflow is: deep-dive a name, talk it through, decide, place the
 order in your broker, then tell Claude "done, I bought X" — and this skill
 writes it to the same files `get_positions.py` reads, so every other skill
-(news-analyst, pre-trade, stock-deep-dive, pre-earnings, the intraday worker)
+(news-analyst, stock-deep-dive, pre-earnings, the intraday worker)
 immediately sees the updated position.
 
 This replaces the manual step of logging trades in the Journalit Obsidian
@@ -164,8 +164,7 @@ calibration pass — but don't write it unless asked.
 ## What this skill does NOT do
 
 - It does not place orders or touch a broker — it records fills you already made.
-- It does not research, score, or produce a verdict (that's `stock-deep-dive` /
-  `pre-trade`).
+- It does not research, score, or produce a verdict (that's `stock-deep-dive`).
 - It does not write theses or notes — only the trade-log file. If the user wants
   the rationale captured, point them at `notes/` or offer to draft a note
   separately.

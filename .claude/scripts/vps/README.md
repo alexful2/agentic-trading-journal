@@ -33,7 +33,7 @@ dashboard (also optional — delete the workflow if you don't publish one).
 Auto-triggered by `check_intraday_news.py` when a sev-4 alert fires on a Tier-1
 ticker. Runs a short "what just happened?" news read and pushes a 3-line verdict
 (Pushover). It is **alert-shaped, not order-shaped** — distinct from the
-`stock-deep-dive` skill and the `pre-trade` gate.
+`stock-deep-dive` skill.
 
 ```
 news worker sev-4 (Tier-1)
