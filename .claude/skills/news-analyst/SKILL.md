@@ -350,7 +350,15 @@ news normally but add a note in the Action line:
 
 ### Step 1d: Verdict Drift Check
 
-Run the drift checker to find deep-dive verdicts that have aged badly:
+First top up the realized-outcome marks (idempotent; fills any verdict whose
++21d/+60d horizon has come due, one Yahoo fetch per due ticker). This keeps the
+deep-dive's verdict-calibration readout fresh; it produces no report output here:
+
+```bash
+python .claude/scripts/score_verdicts.py
+```
+
+Then run the drift checker to find deep-dive verdicts that have aged badly:
 
 ```bash
 python .claude/scripts/check_verdict_drift.py --output verdict_drift.json

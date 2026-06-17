@@ -7,7 +7,7 @@ An investment-research and journaling system, built as
 Claude reads a personal vault of theses, positions, and principles; gathers market
 news; and writes severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point is to automate
-and sharpen the research process of trading, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports, intraday price triggers),
+and sharpen the research process of trading, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports),
 while other stuff is meant to be called manually in
 Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop, though you could design it to be that way. This public repo is meant to serve
 as a base example of an agentic trading journal that you can build on and personalize for yourself.
@@ -25,7 +25,7 @@ as a base example of an agentic trading journal that you can build on and person
 | Skill | What it does | Output |
 |-------|--------------|--------|
 | `news-analyst` | Daily severity-scored portfolio-news alerts + macro awareness. | `vault/reports/daily/` |
-| `stock-deep-dive` | In-depth research report on stock fundamentals — council + blank-slate reframe + verdict | `vault/deep-dives/` |
+| `stock-deep-dive` | In-depth research report on stock fundamentals — council + blank-slate reframe + verdict; reasons against its own past-verdict calibration | `vault/deep-dives/` |
 | `weekly-review` | Weekly macro synthesis, thesis pressure-test, what-shifted | `vault/reports/weekly/` |
 | `quarterly-review` | Calibration vs. closed trades + echo-chamber audit | `vault/reports/quarterly/` |
 | `log-trade` | Log a fill in-session (open / add / trim / close) — no plugin needed | `vault/trades/` |
@@ -91,7 +91,7 @@ it is required to use the skills interactively.
 | **Email briefs** (Resend) | `news-visual/` | Renders the daily report to HTML and emails it | delete `news-visual/`, unset `RESEND_API_KEY` |
 | **Scheduled jobs** (systemd) | `.claude/scripts/vps/` | Runs skills on a timer on a Linux server | delete the dir; or use cron / GitHub Actions instead |
 | **CI / cron fallback** | `.github/workflows/` | GitHub Actions versions of the scheduled jobs | delete the workflows |
-| **Intraday workers** (Pushover) | `.claude/scripts/check_intraday_*.py` | Pure-Python price/news pollers → mobile push | delete the scripts |
+| **Intraday workers** (Pushover) | `.claude/scripts/check_intraday_*.py` | Pure-Python price/news pollers → mobile push (**off by default** — left as reference; the author retired these once the push channel went unused) | delete the scripts |
 | **Public dashboard** | `dashboard/` | Renders vault state to a static HTML page for GitHub Pages | delete the dir |
 
 Every credential is read from environment variables or a gitignored

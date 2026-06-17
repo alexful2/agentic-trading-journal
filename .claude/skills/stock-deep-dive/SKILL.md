@@ -441,6 +441,22 @@ reasoning on their behalf.
 Answer what the user is actually wrestling with — even if you have to
 infer it. Speak to the real tradeoffs, not a simplified version of them.
 
+**First, pull your own verdict-calibration readout** — how past deep-dive
+verdicts of each direction actually played out, so this section reasons against
+the track record instead of in a vacuum:
+
+```bash
+python .claude/scripts/score_verdicts.py --render
+```
+
+This prints one line (e.g. `ADD 5/5 favorable @+21d (avg +33.2%)`). Treat it as
+**evidence, never a command** — exactly as the line itself states. While graded-n
+is small it is labelled *descriptive only, not yet calibrated*; respect that
+hedge and do not over-weight it. If it shows a directional pattern (e.g. ADD
+calls have run favorably, or REDUCE calls have been early), name it where it
+bears on the sizing/timing conclusion — but it informs the verdict, it never
+drives it. Omit any mention if the readout has no graded verdicts yet.
+
 **Cover the following:**
 
 **Portfolio context**
