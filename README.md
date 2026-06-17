@@ -41,7 +41,7 @@ Each skill feeds into each other through a complex logic pipeline.
 `CLAUDE.md` is the always-loaded system context that ties them together (vault
 layout, conventions, the rules every skill obeys).
 
-Logic pipeline between company-dossier/projects/execution thesis is as follows: create company dossier (used generally for all sorts of things) --> company-projects (mosaic substrate) --> execution-thesis (what are they doing?) --> execution-thesis-audit (audit of execution-thesis) --> audit exists as its own file and folds corrections back into execution-thesis
+Logic pipeline between company-dossier/projects/execution thesis is as follows: create company dossier (used generally for all sorts of things) --> company-projects (mosaic substrate) --> execution-thesis (what are they doing?) --> execution-thesis-audit (adversarial, different model) --> audit exists as its own file and folds corrections back into execution-thesis
 
 
 ---
