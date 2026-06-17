@@ -11,6 +11,40 @@ and sharpen the research process of trading, not to let Claude trade entirely fo
 while other stuff is meant to be called manually in
 Claude code (deep dives, company dossier files, etc). Nothing is a fully automated research loop, though you could design it to be that way. This public repo is meant to serve as a base example of an agentic trading journal that you can build on and personalize for yourself.
 
+flowchart LR
+    subgraph Vault["📓 The Vault (source of truth)"]
+        notes["notes/ · library/"]
+        watch["watchlist.md"]
+        trades["trades/"]
+        tw["tripwires.md"]
+    end
+
+    log["log-trade"] --> trades
+    trades --> pos["get_positions.py"]
+
+    pos --> news["news-analyst"]
+    watch --> news
+    notes --> news
+    tw --> news
+    news --> daily["reports/daily/"]
+
+    pos --> dd["stock-deep-dive"]
+    notes --> dd
+    comp["company research<br/>pipeline"] --> dd
+    dd --> dives["deep-dives/ + _verdicts"]
+    dd -.writes.-> tw
+    dd -.writes.-> trig["price-triggers.md"]
+
+    news --> weekly["weekly-review"]
+    weekly --> wout["reports/weekly/"]
+
+    trades --> qr["quarterly-review"]
+    dives --> qr
+    qr --> qout["reports/quarterly/"]
+    qr -. "recalibrates verdicts" .-> dd
+
+    tw -. "a trip fires" .-> dd
+
 > **This is a generalized snapshot of a system I run privately.** It's a
 > portfolio / reference implementation meant to show the architecture — not a
 > maintained product, and not a service with users. I port interesting pieces
