@@ -173,7 +173,10 @@ from auto-justifying any price. No persona file needed.
 
 Skills are written to prefer `web_search_exa` (Exa MCP — neural/semantic search,
 strong on financial content). It is **optional**: if you don't connect Exa, use
-Claude Code's built-in web search instead — the skills degrade gracefully.
+Claude Code's built-in web search instead — the skills degrade gracefully. One
+exception: `company-projects` currently hard-uses the Exa tools
+(`mcp__claude_ai_Exa__web_search_exa` / `web_fetch_exa`) with no built-in
+fallback — without Exa, adapt that skill to the built-in `WebSearch` first.
 
 ## Important Rules
 
@@ -231,4 +234,6 @@ integrations" table. In short:
 All credentials are read from environment variables or a gitignored
 `.claude/settings.local.json`. **No secrets live in this repo.** Set your own
 before enabling any integration. SEC EDGAR requests need a real contact email in
-their `User-Agent` (search for `you@example.com`).
+their `User-Agent` (search for `you@example.com`). The `economic-calendar-fetcher`
+skill needs a free FMP API key in `FMP_API_KEY` (financialmodelingprep.com,
+250 requests/day).
