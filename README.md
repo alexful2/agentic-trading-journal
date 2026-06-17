@@ -48,10 +48,7 @@ Logic pipeline between company-dossier/projects/execution thesis is as follows: 
 
 ## How the vault works (conventions)
 
-The skills table tells you *what each skill produces*. What it doesn't tell you
-is how the outputs become a **system** instead of a folder of disconnected
-reports. These are the connective conventions — the way this vault actually
-happens to work:
+These are the connective conventions around how the vault happens to work and how skills relate to each other:
 
 - **The wikilink thread is the real product.** Everything cross-references by
   `[[TICKER-YYYY-MM-DD]]`. A note threads up to a deep-dive; a daily alert flags
@@ -63,38 +60,27 @@ happens to work:
 
 - **Two retention classes: ephemeral vs. permanent.** Deep-dives are
   **disposable** — superseded ones are auto-deleted, so only the latest per
-  ticker survives. Notes, company dossiers, and the ledgers are **permanent**.
-  That asymmetry is deliberate: tactical analysis goes stale fast and shouldn't
-  accumulate; reasoning and state should.
+  ticker survives (old files go stale and lose value). Notes, company dossiers, and the ledgers are **permanent** / meant to last a very long time.
 
-- **State lives in append-only ledgers, not in the reports.** `_verdicts.md`,
+- **The "memory" lives in a few running list-files, not in the reports** `_verdicts.md`,
   `tripwires.md`, and the watchlist / price-trigger tranche tables are the
   system's memory. Reports are *views*; ledgers are *state*. `_verdicts.md`
   exists precisely because deep-dives get deleted — it captures the verdict and
   break-even probability before the dive file is destroyed, so the calibration
   loop and verdict-drift detection have something durable to read.
 
-- **Supersession is enforced three ways at once.** Filename date (newer wins) +
-  an explicit `[[prior-dive]]` citation in the new file + verdict-drift flagging
-  in the daily alert ("ADD stale at 24 days"). The rule "newer notes supersede
-  older ones" is only trustworthy because these mechanics back it.
+- **"Newer beats older" is backed up three different ways** When a note or dive is outdated, you can tell three ways: the date in the filename (a 2026-06-06 file beats a 2026-05-12 one), the new file explicitly names the old one it's replacing, and the daily alert literally calls it out ("that ADD verdict is 24 days stale"). The rule "trust the newest file" only works because all three of these enforce it — otherwise you'd risk acting on a stale target.
 
-- **Triggers cause re-evaluation, not action.** A tripped wire or a drifted
-  verdict emits `run deep-dive TICKER` — a pre-committed signal to *reassess*,
-  never an auto-sell. The system argues; the human acts. That boundary is the
-  whole "not letting Claude trade for you" stance, made concrete.
+- **Alerts tell you to re-check, not to trade** When a tripwire trips or a verdict drifts, the system's output is "run deep-dive on this stock" — go look again. It never says "sell." A human always makes the actual buy/sell call after reviewing. That's the concrete version of "this doesn't trade for you."
 
 - **The company stack has three lifespans.** `companies/TICKER/` is the
   permanent SEC baseline; `execution-thesis` is the medium-lived mosaic layer;
   deep-dives are the ephemeral tactical layer. Keeping static reference data and
   fast-moving tactical reads in separate lifespans is what stops them colliding.
 
-- **`library/` frameworks are cited by name as rules.** `[[macro-cohort-confirmation]]`,
-  `[[C9 - Most Stocks Underperform T-Bills]]`, `[[wait-for-deal-thesis]]` — the
-  library isn't reference reading, it's the decision grammar the dives reason in
-  and invoke by name to justify or block a call.
+- **The library/ files are rules the dives actually use** Frameworks like [[macro-cohort-confirmation]] or [[C9 - Most Stocks Underperform T-Bills]] are what deep dives are meant to cite and follow when making specific decisions.
 
-- **Staleness is a first-class concept.** Price triggers expire at 30 days;
+- **The system distrusts its own old output** Price triggers expire at 30 days;
   verdicts get flagged "stale at N days"; `Last Reviewed` dates gate freshness.
   The system actively distrusts its own old outputs rather than treating them as
   standing truth.
