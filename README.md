@@ -48,7 +48,7 @@ Logic pipeline between company-dossier/projects/execution thesis is as follows: 
 
 ## How the vault works (conventions)
 
-These are the connective conventions around how the vault happens to work and how skills relate to each other:
+These are the specific design choices around how the vault/journal happens to work (the connective infastructure):
 
 - **The wikilink thread is the real product.** Everything cross-references by
   `[[TICKER-YYYY-MM-DD]]`. A note threads up to a deep-dive; a daily alert flags
