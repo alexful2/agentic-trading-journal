@@ -46,6 +46,66 @@ Logic pipeline between company-dossier/projects/execution thesis is as follows: 
 
 ---
 
+## How the vault works (conventions)
+
+The skills table tells you *what each skill produces*. What it doesn't tell you
+is how the outputs become a **system** instead of a folder of disconnected
+reports. These are the connective conventions — the way this vault actually
+happens to work:
+
+- **The wikilink thread is the real product.** Everything cross-references by
+  `[[TICKER-YYYY-MM-DD]]`. A note threads up to a deep-dive; a daily alert flags
+  a stale verdict and emits `run deep-dive X`; the new dive cites the one it
+  supersedes in its footer; the weekly review cites every dive it read. The
+  result is a *traceable causal chain* — you can walk note → dive → watchlist
+  tranche → daily fire → weekly audit → next dive. That auditability is most of
+  the point.
+
+- **Two retention classes: ephemeral vs. permanent.** Deep-dives are
+  **disposable** — superseded ones are auto-deleted, so only the latest per
+  ticker survives. Notes, company dossiers, and the ledgers are **permanent**.
+  That asymmetry is deliberate: tactical analysis goes stale fast and shouldn't
+  accumulate; reasoning and state should.
+
+- **State lives in append-only ledgers, not in the reports.** `_verdicts.md`,
+  `tripwires.md`, and the watchlist / price-trigger tranche tables are the
+  system's memory. Reports are *views*; ledgers are *state*. `_verdicts.md`
+  exists precisely because deep-dives get deleted — it captures the verdict and
+  break-even probability before the dive file is destroyed, so the calibration
+  loop and verdict-drift detection have something durable to read.
+
+- **Supersession is enforced three ways at once.** Filename date (newer wins) +
+  an explicit `[[prior-dive]]` citation in the new file + verdict-drift flagging
+  in the daily alert ("ADD stale at 24 days"). The rule "newer notes supersede
+  older ones" is only trustworthy because these mechanics back it.
+
+- **Triggers cause re-evaluation, not action.** A tripped wire or a drifted
+  verdict emits `run deep-dive TICKER` — a pre-committed signal to *reassess*,
+  never an auto-sell. The system argues; the human acts. That boundary is the
+  whole "not letting Claude trade for you" stance, made concrete.
+
+- **The company stack has three lifespans.** `companies/TICKER/` is the
+  permanent SEC baseline; `execution-thesis` is the medium-lived mosaic layer;
+  deep-dives are the ephemeral tactical layer. Keeping static reference data and
+  fast-moving tactical reads in separate lifespans is what stops them colliding.
+
+- **`library/` frameworks are cited by name as rules.** `[[macro-cohort-confirmation]]`,
+  `[[C9 - Most Stocks Underperform T-Bills]]`, `[[wait-for-deal-thesis]]` — the
+  library isn't reference reading, it's the decision grammar the dives reason in
+  and invoke by name to justify or block a call.
+
+- **Staleness is a first-class concept.** Price triggers expire at 30 days;
+  verdicts get flagged "stale at N days"; `Last Reviewed` dates gate freshness.
+  The system actively distrusts its own old outputs rather than treating them as
+  standing truth.
+
+None of this is enforced by code you have to configure — it falls out of the
+filename conventions, the `[[wikilink]]` habit, and `CLAUDE.md`'s rules. Adopt as
+much or as little as you like; the skills degrade gracefully if a ledger or
+thread is missing.
+
+---
+
 ## Quickstart
 
 You need [Claude Code](https://claude.com/claude-code) and Python 3.11+.
