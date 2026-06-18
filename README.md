@@ -4,8 +4,8 @@ An investment-research and journaling system, built as
 [Claude Code](https://claude.com/claude-code) **skills** on top of a local
 [Obsidian](https://obsidian.md) vault.
 
-Your agents read a personal vault of theses, positions, and principles, gather market
-news, and write severity-scored alerts, in-depth research, weekly
+Claude reads a personal vault of theses, positions, and principles, gathers market
+news, and writes severity-scored alerts, in-depth research, weekly
 macro syntheses, and quarterly self-audits back into the vault. The point is to automate
 and sharpen the research process of trading, not to let Claude trade entirely for you. Some skills are designed as scheduled runs (daily news reports, weekly/quarterly reviews, curator reports),
 while other stuff is meant to be called manually in
